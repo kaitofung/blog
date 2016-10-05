@@ -73,8 +73,6 @@
 
 
 
-  
-
 
   <link rel="alternate" href="/atom.xml" title="Kaito's blog" type="application/atom+xml" />
 
@@ -88,25 +86,25 @@
 
 
 
-<meta name="description" content="源码解析:View的呈现过程——之setContentView###猜想：View是在Activity的setContentView()方法后呈现的
+<meta name="description" content="###猜想：View是在Activity的setContentView()方法后呈现的
 ###阅读源代码验证
 public void setContentView(@LayoutRes int layoutResID) {
-    getWindow().setContentView(layoutResID);  //通过attach">
+    getWindow().setContentView(layoutResID);  //通过attach()实例化的PhoneWindow实例来setContentVi">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Kaito's blog">
-<meta property="og:url" content="kaitofung.cn/2016/10/04/源码解析View的呈现过程之setContentView/index.html">
+<meta property="og:title" content="源码解析:View的呈现过程——之setContentView">
+<meta property="og:url" content="kaitofung.cn/2016/05/05/源码解析-View的呈现过程——之setContentView/index.html">
 <meta property="og:site_name" content="Kaito's blog">
-<meta property="og:description" content="源码解析:View的呈现过程——之setContentView###猜想：View是在Activity的setContentView()方法后呈现的
+<meta property="og:description" content="###猜想：View是在Activity的setContentView()方法后呈现的
 ###阅读源代码验证
 public void setContentView(@LayoutRes int layoutResID) {
-    getWindow().setContentView(layoutResID);  //通过attach">
-<meta property="og:updated_time" content="2016-10-05T14:21:23.326Z">
+    getWindow().setContentView(layoutResID);  //通过attach()实例化的PhoneWindow实例来setContentVi">
+<meta property="og:updated_time" content="2016-10-05T14:39:08.598Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Kaito's blog">
-<meta name="twitter:description" content="源码解析:View的呈现过程——之setContentView###猜想：View是在Activity的setContentView()方法后呈现的
+<meta name="twitter:title" content="源码解析:View的呈现过程——之setContentView">
+<meta name="twitter:description" content="###猜想：View是在Activity的setContentView()方法后呈现的
 ###阅读源代码验证
 public void setContentView(@LayoutRes int layoutResID) {
-    getWindow().setContentView(layoutResID);  //通过attach">
+    getWindow().setContentView(layoutResID);  //通过attach()实例化的PhoneWindow实例来setContentVi">
 
 
 
@@ -127,9 +125,9 @@ public void setContentView(@LayoutRes int layoutResID) {
 
 
 
-  <link rel="canonical" href="kaitofung.cn/2016/10/04/源码解析View的呈现过程之setContentView/"/>
+  <link rel="canonical" href="kaitofung.cn/2016/05/05/源码解析-View的呈现过程——之setContentView/"/>
 
-  <title>  | Kaito's blog </title>
+  <title> 源码解析:View的呈现过程——之setContentView | Kaito's blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -239,7 +237,7 @@ public void setContentView(@LayoutRes int layoutResID) {
             
             
               
-                
+                源码解析:View的呈现过程——之setContentView
               
             
           </h1>
@@ -251,8 +249,8 @@ public void setContentView(@LayoutRes int layoutResID) {
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-10-04T16:43:13+08:00" content="2016-10-04">
-              2016-10-04
+            <time itemprop="dateCreated" datetime="2016-05-05T22:37:25+08:00" content="2016-05-05">
+              2016-05-05
             </time>
           </span>
 
@@ -262,8 +260,8 @@ public void setContentView(@LayoutRes int layoutResID) {
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/10/04/源码解析View的呈现过程之setContentView/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/04/源码解析View的呈现过程之setContentView/" itemprop="commentsCount"></span>
+                <a href="/2016/05/05/源码解析-View的呈现过程——之setContentView/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/05/05/源码解析-View的呈现过程——之setContentView/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -286,8 +284,7 @@ public void setContentView(@LayoutRes int layoutResID) {
       
 
       
-        <hr>
-<h2 id="源码解析-View的呈现过程——之setContentView"><a href="#源码解析-View的呈现过程——之setContentView" class="headerlink" title="源码解析:View的呈现过程——之setContentView"></a>源码解析:View的呈现过程——之setContentView</h2><p>###猜想：View是在Activity的setContentView()方法后呈现的</p>
+        <p>###猜想：View是在Activity的setContentView()方法后呈现的</p>
 <p>###阅读源代码验证</p>
 <pre><code>public void setContentView(@LayoutRes int layoutResID) {
     getWindow().setContentView(layoutResID);  //通过attach()实例化的PhoneWindow实例来setContentView
@@ -472,8 +469,8 @@ protected ViewGroup generateLayout(DecorView decor) {
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/10/04/源码解析View的呈现过程之setContentView/"
-           data-title="" data-url="kaitofung.cn/2016/10/04/源码解析View的呈现过程之setContentView/">
+      <div class="ds-thread" data-thread-key="2016/05/05/源码解析-View的呈现过程——之setContentView/"
+           data-title="源码解析:View的呈现过程——之setContentView" data-url="kaitofung.cn/2016/05/05/源码解析-View的呈现过程——之setContentView/">
       </div>
     
   </div>
@@ -557,7 +554,7 @@ protected ViewGroup generateLayout(DecorView decor) {
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#源码解析-View的呈现过程——之setContentView"><span class="nav-number">1.</span> <span class="nav-text">源码解析:View的呈现过程——之setContentView</span></a></li></ol></div>
+              <p class="post-toc-empty">此文章未包含目录</p>
             
           </div>
         </section>
