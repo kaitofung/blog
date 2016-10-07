@@ -68,12 +68,10 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="Android源码解析," />
 
 
 
-
-  
 
 
   <link rel="alternate" href="/atom.xml" title="Kaito's blog" type="application/atom+xml" />
@@ -93,16 +91,16 @@
 public void setContentView(@LayoutRes int layoutResID) {
     getWindow().setContentView(layoutResID);  //通过attach()实例化的PhoneWindow实例来setContentVi">
 <meta property="og:type" content="article">
-<meta property="og:title" content="源码解析:View的呈现过程——之setContentView">
-<meta property="og:url" content="kaitofung.cn/2016/05/05/源码解析-View的呈现过程——之setContentView/index.html">
+<meta property="og:title" content="View的呈现过程——之setContentView">
+<meta property="og:url" content="kaitofung.cn/2016/05/05/View的呈现过程——之setContentView/index.html">
 <meta property="og:site_name" content="Kaito's blog">
 <meta property="og:description" content="###猜想：View是在Activity的setContentView()方法后呈现的
 ###阅读源代码验证
 public void setContentView(@LayoutRes int layoutResID) {
     getWindow().setContentView(layoutResID);  //通过attach()实例化的PhoneWindow实例来setContentVi">
-<meta property="og:updated_time" content="2016-10-05T14:39:08.598Z">
+<meta property="og:updated_time" content="2016-10-06T13:17:06.950Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="源码解析:View的呈现过程——之setContentView">
+<meta name="twitter:title" content="View的呈现过程——之setContentView">
 <meta name="twitter:description" content="###猜想：View是在Activity的setContentView()方法后呈现的
 ###阅读源代码验证
 public void setContentView(@LayoutRes int layoutResID) {
@@ -127,9 +125,9 @@ public void setContentView(@LayoutRes int layoutResID) {
 
 
 
-  <link rel="canonical" href="kaitofung.cn/2016/05/05/源码解析-View的呈现过程——之setContentView/"/>
+  <link rel="canonical" href="kaitofung.cn/2016/05/05/View的呈现过程——之setContentView/"/>
 
-  <title> 源码解析:View的呈现过程——之setContentView | Kaito's blog </title>
+  <title> View的呈现过程——之setContentView | Kaito's blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -239,7 +237,7 @@ public void setContentView(@LayoutRes int layoutResID) {
             
             
               
-                源码解析:View的呈现过程——之setContentView
+                View的呈现过程——之setContentView
               
             
           </h1>
@@ -262,8 +260,8 @@ public void setContentView(@LayoutRes int layoutResID) {
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/05/05/源码解析-View的呈现过程——之setContentView/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/05/05/源码解析-View的呈现过程——之setContentView/" itemprop="commentsCount"></span>
+                <a href="/2016/05/05/View的呈现过程——之setContentView/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/05/05/View的呈现过程——之setContentView/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -425,7 +423,27 @@ protected ViewGroup generateLayout(DecorView decor) {
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/Android源码解析/" rel="tag">#Android源码解析</a>
+          
+        </div>
+      
 
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/06/19/View的呈现过程——之浅谈ViewRootImpl/" rel="prev" title="View的呈现过程——之浅谈ViewRootImpl">
+                View的呈现过程——之浅谈ViewRootImpl <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
       
 
       
@@ -471,8 +489,8 @@ protected ViewGroup generateLayout(DecorView decor) {
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/05/05/源码解析-View的呈现过程——之setContentView/"
-           data-title="源码解析:View的呈现过程——之setContentView" data-url="kaitofung.cn/2016/05/05/源码解析-View的呈现过程——之setContentView/">
+      <div class="ds-thread" data-thread-key="2016/05/05/View的呈现过程——之setContentView/"
+           data-title="View的呈现过程——之setContentView" data-url="kaitofung.cn/2016/05/05/View的呈现过程——之setContentView/">
       </div>
     
   </div>
@@ -517,13 +535,20 @@ protected ViewGroup generateLayout(DecorView decor) {
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">1</span>
+              <span class="site-state-item-count">2</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           
 
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
           
 
         </nav>

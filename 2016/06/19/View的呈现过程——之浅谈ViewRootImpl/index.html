@@ -68,10 +68,12 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="Android源码解析," />
 
 
 
+
+  
 
 
   <link rel="alternate" href="/atom.xml" title="Kaito's blog" type="application/atom+xml" />
@@ -86,12 +88,24 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="Kaito's blog">
-<meta property="og:url" content="kaitofung.cn/index.html">
+<meta name="description" content="上一遍文章结束的时候谈到View要经过测量，布局，绘制才能呈现。那么什么时候才会执行这几个步骤呢？相信接触过自定义View的同学都会知道是invalidate()可以引起重绘的。下面通过Read The Fucking Source Code，整理出以下流程：
+通过三种颜色区分，分别在View.ViewGroup,ViewRootImpl调用相应的方法，可见
+1.View的UI刷新是在View树的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="View的呈现过程——之浅谈ViewRootImpl">
+<meta property="og:url" content="kaitofung.cn/2016/06/19/View的呈现过程——之浅谈ViewRootImpl/index.html">
 <meta property="og:site_name" content="Kaito's blog">
+<meta property="og:description" content="上一遍文章结束的时候谈到View要经过测量，布局，绘制才能呈现。那么什么时候才会执行这几个步骤呢？相信接触过自定义View的同学都会知道是invalidate()可以引起重绘的。下面通过Read The Fucking Source Code，整理出以下流程：
+通过三种颜色区分，分别在View.ViewGroup,ViewRootImpl调用相应的方法，可见
+1.View的UI刷新是在View树的">
+<meta property="og:image" content="http://oekcs3wuy.bkt.clouddn.com/View%E7%9A%84invalidate%E6%B5%81%E7%A8%8B%E5%9B%BE.png">
+<meta property="og:updated_time" content="2016-10-07T13:39:39.397Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Kaito's blog">
+<meta name="twitter:title" content="View的呈现过程——之浅谈ViewRootImpl">
+<meta name="twitter:description" content="上一遍文章结束的时候谈到View要经过测量，布局，绘制才能呈现。那么什么时候才会执行这几个步骤呢？相信接触过自定义View的同学都会知道是invalidate()可以引起重绘的。下面通过Read The Fucking Source Code，整理出以下流程：
+通过三种颜色区分，分别在View.ViewGroup,ViewRootImpl调用相应的方法，可见
+1.View的UI刷新是在View树的">
+<meta name="twitter:image" content="http://oekcs3wuy.bkt.clouddn.com/View%E7%9A%84invalidate%E6%B5%81%E7%A8%8B%E5%9B%BE.png">
 
 
 
@@ -112,9 +126,9 @@
 
 
 
-  <link rel="canonical" href="kaitofung.cn/"/>
+  <link rel="canonical" href="kaitofung.cn/2016/06/19/View的呈现过程——之浅谈ViewRootImpl/"/>
 
-  <title> Kaito's blog </title>
+  <title> View的呈现过程——之浅谈ViewRootImpl | Kaito's blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -135,9 +149,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left 
-   page-home 
- ">
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -204,9 +216,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
   
@@ -226,10 +238,7 @@
             
             
               
-                
-                <a class="post-title-link" href="/2016/06/19/View的呈现过程——之浅谈ViewRootImpl/" itemprop="url">
-                  View的呈现过程——之浅谈ViewRootImpl
-                </a>
+                View的呈现过程——之浅谈ViewRootImpl
               
             
           </h1>
@@ -276,9 +285,7 @@
       
 
       
-        
-          
-            <p><a href="http://blog.kaitofung.cn/2016/05/05/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-View%E7%9A%84%E5%91%88%E7%8E%B0%E8%BF%87%E7%A8%8B%E2%80%94%E2%80%94%E4%B9%8BsetContentView/" title="View的呈现过程——之setContentView " target="_blank" rel="external">上一遍文章</a>结束的时候谈到View要经过测量，布局，绘制才能呈现。那么什么时候才会执行这几个步骤呢？相信接触过自定义View的同学都会知道是invalidate()可以引起重绘的。<br>下面通过Read The Fucking Source Code，整理出以下流程：<br><img src="http://oekcs3wuy.bkt.clouddn.com/View%E7%9A%84invalidate%E6%B5%81%E7%A8%8B%E5%9B%BE.png" alt="View的invalidate流程"></p>
+        <p><a href="http://blog.kaitofung.cn/2016/05/05/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-View%E7%9A%84%E5%91%88%E7%8E%B0%E8%BF%87%E7%A8%8B%E2%80%94%E2%80%94%E4%B9%8BsetContentView/" title="View的呈现过程——之setContentView " target="_blank" rel="external">上一遍文章</a>结束的时候谈到View要经过测量，布局，绘制才能呈现。那么什么时候才会执行这几个步骤呢？相信接触过自定义View的同学都会知道是invalidate()可以引起重绘的。<br>下面通过Read The Fucking Source Code，整理出以下流程：<br><img src="http://oekcs3wuy.bkt.clouddn.com/View%E7%9A%84invalidate%E6%B5%81%E7%A8%8B%E5%9B%BE.png" alt="View的invalidate流程"></p>
 <p>通过三种颜色区分，分别在View.ViewGroup,ViewRootImpl调用相应的方法，可见</p>
 <p><strong>1.View的UI刷新是在View树的顶层View的ViewParent（即ViewRootImpl）进行刷新的；</strong></p>
 <p><strong>2.当View的AttachInfo为空的时候是没有进行线程安全检验的且中断了invalidate；</strong></p>
@@ -403,255 +410,82 @@ public void requestLayout() {
 <p><strong>总结：View的UI刷新是依赖于ViewRootImpl的performTraversals()，而Activity的首次UI树遍历发生在WindowManagerGlobal的addView方法中。</strong></p>
 <p>本文章部分内容参考了：<br><a href="http://www.jianshu.com/p/687010ccad66" target="_blank" rel="external">Android View源码解读：浅谈DecorView与ViewRootImpl</a></p>
 
-          
+      
+    </div>
+
+    <div>
+      
         
+
       
     </div>
 
     <div>
       
-    </div>
+        
 
-    <div>
       
     </div>
 
     <footer class="post-footer">
       
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/05/05/View的呈现过程——之setContentView/" itemprop="url">
-                  View的呈现过程——之setContentView
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-05-05T22:37:25+08:00" content="2016-05-05">
-              2016-05-05
-            </time>
-          </span>
-
+        <div class="post-tags">
           
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/05/05/View的呈现过程——之setContentView/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/05/05/View的呈现过程——之setContentView/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
+            <a href="/tags/Android源码解析/" rel="tag">#Android源码解析</a>
           
         </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
-        
-          
-            <p>###猜想：View是在Activity的setContentView()方法后呈现的</p>
-<p>###阅读源代码验证</p>
-<pre><code>public void setContentView(@LayoutRes int layoutResID) {
-    getWindow().setContentView(layoutResID);  //通过attach()实例化的PhoneWindow实例来setContentView
-    initWindowDecorActionBar();  //初始化ActionBar
-}
-</code></pre><p> 从以上代码片段可以看出做了两件事情，继续查看PhoneWindow的setContentView(layoutResID)</p>
-<pre><code>// This is the view in which the window contents are placed. It is either
-// mDecor itself, or a child of mDecor where the contents go.
-private ViewGroup mContentParent;
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/05/05/View的呈现过程——之setContentView/" rel="next" title="View的呈现过程——之setContentView">
+                <i class="fa fa-chevron-left"></i> View的呈现过程——之setContentView
+              </a>
+            
+          </div>
 
-// This is the top-level view of the window, containing the window decor.
-//通过查看View Hierachy可以知道顶层的DecorView为一个FrameLayout的子类实例
-private DecorView mDecor;
-    @Override
-    public void setContentView(int layoutResID) {
-    // Note: FEATURE_CONTENT_TRANSITIONS may be set in the process of installing the window
-    // decor, when theme attributes and the like are crystalized. Do not check the feature
-    // before this happens.
-    if (mContentParent == null) {  //A
-    installDecor();
-    } else if (!hasFeature(FEATURE_CONTENT_TRANSITIONS)) {
-    mContentParent.removeAllViews();
-    }
-    if (hasFeature(FEATURE_CONTENT_TRANSITIONS)) {
-    final Scene newScene = Scene.getSceneForLayout(mContentParent, layoutResID,
-    getContext());
-    transitionTo(newScene);
-    } else {
-    mLayoutInflater.inflate(layoutResID, mContentParent);//B
-    }
-    mContentParent.requestApplyInsets();
-    final Callback cb = getCallback();
-    if (cb != null &amp;&amp; !isDestroyed()) {
-    cb.onContentChanged();
-    }
-    mContentParentExplicitlySet = true;
-    } 
-</code></pre><p>以上代码的主要工作：</p>
-<p>1.mContentParent为空的时候调用installDecor(),</p>
-<p>2 mLayoutInflater.inflate(layoutResID, mContentParent);把布局加载到mContentParent.</p>
-<pre><code>private void installDecor() {
-    if (mDecor == null) {
-        mDecor = generateDecor(); // A
-   /*
-    * setDescendantFocusability用于设置mDecor中的子View的聚焦性
-    * 该方法决定了mDecor与其中包含的子View之间关于焦点获取的关系
-    * FOCUS_AFTER_DESCENDANTS表示只有当mDecor的子View都不愿意获取焦点时 才让mDecor获取焦点
-    */
-        mDecor.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
-       // 设置mDecor为整个Activity窗口的根节点，从此处可以看出窗口根节点为一个DecorView
-        mDecor.setIsRootNamespace(true);
-        if (!mInvalidatePanelMenuPosted &amp;&amp; mInvalidatePanelMenuFeatures != 0) {
-            mDecor.postOnAnimation(mInvalidatePanelMenuRunnable);
-        }
-    }
-    if (mContentParent == null) {
-        mContentParent = generateLayout(mDecor); // B
-        ...
-        } 
-    }
-}
-
-protected DecorView generateDecor() {
-    return new DecorView(getContext(), -1);
-}
-</code></pre><p>installDecor()主要工作：</p>
-<p>1.generateDecor()</p>
-<p>2.generateLayout(mDecor)</p>
-<pre><code>//返回当前Activity的内容区域视图，即我们的布局文件显示区域mContentParent
-protected ViewGroup generateLayout(DecorView decor) {
-        // Apply data from current theme.
-        //从当前Window的Theme中获取一组属性值，赋给a
-        TypedArray a = getWindowStyle();
-        /*
-   * 此处有段代码未贴出，功能为：
-   * 1. 根据Activity的Theme特征，为当前窗口选择布局文件的修饰feature
-   * 2. Inflate the window decor
-   */
-        int layoutResource;
-        int features = getLocalFeatures();
-  /*
-   * 此处有段代码未贴出
-   * 1. getLocalFeatures()返回一个用于描述当前Window特征的整数值
-   * 2. layoutResource为根据features所指代的窗口特征值而为当前窗口选定的资源文件id
-   * 3. 系统包含多个布局资源文件，位于frameworks/base/core/res/layout/
-   * 4. 主要有：R.layout.dialog_titile_icons、R.layout.screen_title_icons
-   *     R.layout.screen_progress、R.layout.dialog_custom_title
-   *     R.layout.dialog_title   
-   *     R.layout.screen_title    最常用的Activity窗口修饰布局文件
-   *        R.layout.screen_simple   全屏的Activity窗口布局文件
-   */
-  //startChanging()方法内容：mChanging = true;
-        mDecor.startChanging();
-  //将layoutResource资源文件包含的View树添加到decor中
-  //width和height均为MATCH_PARENT
-  //并为mContentRoot和contentParent赋值
-        View in = mLayoutInflater.inflate(layoutResource, null);
-        decor.addView(in, new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
-        mContentRoot = (ViewGroup) in;
-        ViewGroup contentParent = (ViewGroup)findViewById(ID_ANDROID_CONTENT);
-        if (contentParent == null) {
-            throw new RuntimeException(&quot;Window couldn&apos;t find content container view&quot;);
-        }
-        if ((features &amp; (1 &lt;&lt; FEATURE_INDETERMINATE_PROGRESS)) != 0) {
-            ProgressBar progress = getCircularProgressBar(false);
-            if (progress != null) {
-                progress.setIndeterminate(true);
-            }
-        }
-        if ((features &amp; (1 &lt;&lt; FEATURE_SWIPE_TO_DISMISS)) != 0) {
-            registerSwipeCallbacks();
-        }
-        //后面包含一段只能应用于顶层窗口的一些Remaining steps
-        //主要用于设置一些title和background属性
-        return contentParent;
-}
-</code></pre><p><strong>综合来看，setContentView的工作是为Activity所持有的PhoneWindow引用创建了DecorView，并通过(ViewGroup)findViewById(ID_ANDROID_CONTENT)返回了mContentParent，然后通过 mLayoutInflater.inflate(layoutResID, mContentParent);把我们的布局inflate到mContentParent中。</strong></p>
-<p>通过源码setContentView的源码可知，此时View是未能呈现的，因为从代码片段未测量，布局，绘制的相关方法。所以此时直接通过getWide，getMeasureWith获取到都是为0。</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
       
 
       
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </article>
 
 
-    
-  </section>
 
-  
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
 
 
           </div>
@@ -659,6 +493,14 @@ protected ViewGroup generateLayout(DecorView decor) {
 
 
           
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/06/19/View的呈现过程——之浅谈ViewRootImpl/"
+           data-title="View的呈现过程——之浅谈ViewRootImpl" data-url="kaitofung.cn/2016/06/19/View的呈现过程——之浅谈ViewRootImpl/">
+      </div>
+    
+  </div>
+
 
         </div>
         
@@ -678,8 +520,17 @@ protected ViewGroup generateLayout(DecorView decor) {
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+      <section class="site-overview sidebar-panel ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="https://avatars3.githubusercontent.com/u/17872493?v=3&s=466"
@@ -729,6 +580,17 @@ protected ViewGroup generateLayout(DecorView decor) {
 
       </section>
 
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <p class="post-toc-empty">此文章未包含目录</p>
+            
+          </div>
+        </section>
       
 
     </div>
@@ -825,6 +687,10 @@ protected ViewGroup generateLayout(DecorView decor) {
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
 
   
 
