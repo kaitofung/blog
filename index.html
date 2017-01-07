@@ -299,62 +299,63 @@ transient int modCount;//被修改的次数
 <p>因此,必须在 “冲突的机会”与”空间利用率”之间寻找一种平衡与折衷. 这种平衡与折衷本质上是数据结构中有名的”时-空”矛盾的平衡与折衷.<br>如果机器内存足够，并且想要提高查询速度的话可以将加载因子设置小一点；相反如果机器内存紧张，并且对查询速度没有什么要求的话可以将加载因子设置大一点。不过一般我们都不用去设置它，让它取默认值0.75就好了。</p>
 <p>put方法的实现    </p>
 <ul>
-<li><p>  public V put(K key, V value) {</p>
-<pre><code>// 对key的hashCode()做hash
-return putVal(hash(key), key, value, false, true);
-</code></pre><p>  }</p>
-<p>  final V putVal(int hash, K key, V value, boolean onlyIfAbsent,</p>
-<pre><code>           boolean evict) {
-Node&lt;K,V&gt;[] tab; Node&lt;K,V&gt; p; int n, i;
-// tab为空则创建
-if ((tab = table) == null || (n = tab.length) == 0)
-    n = (tab = resize()).length;
-// 计算index，并对null做处理
-if ((p = tab[i = (n - 1) &amp; hash]) == null)
-    tab[i] = newNode(hash, key, value, null);
-else {
-    Node&lt;K,V&gt; e; K k;
-    // 节点存在
-    if (p.hash == hash &amp;&amp;
-        ((k = p.key) == key || (key != null &amp;&amp; key.equals(k))))
-        e = p;
-    // 该链为树
-    else if (p instanceof TreeNode)
-        e = ((TreeNode&lt;K,V&gt;)p).putTreeVal(this, tab, hash, key, value);
-    // 该链为链表
+<li></li>
+</ul>
+<pre><code>public V put(K key, V value) {
+    // 对key的hashCode()做hash
+    return putVal(hash(key), key, value, false, true);
+}
+
+final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
+               boolean evict) {
+    Node&lt;K,V&gt;[] tab; Node&lt;K,V&gt; p; int n, i;
+    // tab为空则创建
+    if ((tab = table) == null || (n = tab.length) == 0)
+        n = (tab = resize()).length;
+    // 计算index，并对null做处理
+    if ((p = tab[i = (n - 1) &amp; hash]) == null)
+        tab[i] = newNode(hash, key, value, null);
     else {
-        for (int binCount = 0; ; ++binCount) {
-            if ((e = p.next) == null) {
-                p.next = newNode(hash, key, value, null);
-                if (binCount &gt;= TREEIFY_THRESHOLD - 1) // -1 for 1st
-                    treeifyBin(tab, hash);
-                break;
+        Node&lt;K,V&gt; e; K k;
+        // 节点存在
+        if (p.hash == hash &amp;&amp;
+            ((k = p.key) == key || (key != null &amp;&amp; key.equals(k))))
+            e = p;
+        // 该链为树
+        else if (p instanceof TreeNode)
+            e = ((TreeNode&lt;K,V&gt;)p).putTreeVal(this, tab, hash, key, value);
+        // 该链为链表
+        else {
+            for (int binCount = 0; ; ++binCount) {
+                if ((e = p.next) == null) {
+                    p.next = newNode(hash, key, value, null);
+                    if (binCount &gt;= TREEIFY_THRESHOLD - 1) // -1 for 1st
+                        treeifyBin(tab, hash);
+                    break;
+                }
+                if (e.hash == hash &amp;&amp;
+                    ((k = e.key) == key || (key != null &amp;&amp; key.equals(k))))
+                    break;
+                p = e;
             }
-            if (e.hash == hash &amp;&amp;
-                ((k = e.key) == key || (key != null &amp;&amp; key.equals(k))))
-                break;
-            p = e;
+        }
+        // 写入
+        if (e != null) { // existing mapping for key
+            V oldValue = e.value;
+            if (!onlyIfAbsent || oldValue == null)
+                e.value = value;
+            afterNodeAccess(e);
+            return oldValue;
         }
     }
-    // 写入
-    if (e != null) { // existing mapping for key
-        V oldValue = e.value;
-        if (!onlyIfAbsent || oldValue == null)
-            e.value = value;
-        afterNodeAccess(e);
-        return oldValue;
-    }
+    ++modCount;
+    // 超过load factor*current capacity，resize
+    if (++size &gt; threshold)
+        resize();
+    afterNodeInsertion(evict);
+    return null;
 }
-++modCount;
-// 超过load factor*current capacity，resize
-if (++size &gt; threshold)
-    resize();
-afterNodeInsertion(evict);
-return null;
-</code></pre><p>  }</p>
-</li>
-</ul>
-<p>put函数大致的思路为：</p>
+</code></pre><p>put函数大致的思路为：</p>
 <ol>
 <li>对key的hashCode()做hash，然后再计算index;</li>
 <li>如果没碰撞直接放到bucket里；</li>
@@ -371,122 +372,123 @@ return null;
 <p>  接下来，我们分析下为什么哈希表的容量一定要是2的整数次幂。首先，length为2的整数次幂的话，h&amp;(length-1)就相当于对length取模，这样便保证了散列的均匀，同时也提升了效率；其次，length为2的整数次幂的话，为偶数，这样length-1为奇数，奇数的最后一位是1，这样便保证了h&amp;(length-1)的最后一位可能为0，也可能为1（这取决于h的值），即与后的结果可能为偶数，也可能为奇数，这样便可以保证散列的均匀性，而如果length为奇数的话，很明显length-1为偶数，它的最后一位是0，这样h&amp;(length-1)的最后一位肯定为0，即只能为偶数，这样任何hash值都只会被散列到数组的偶数下标位置上，这便浪费了近一半的空间，因此，length取2的整数次幂，是为了使不同hash值发生碰撞的概率较小，这样就能使元素在哈希表中均匀地散列。</p>
 <p>resize()方法的实现</p>
 <ul>
-<li><p>  final Node<k,v>[] resize() {</k,v></p>
-<pre><code>Node&lt;K,V&gt;[] oldTab = table;
-int oldCap = (oldTab == null) ? 0 : oldTab.length;
-int oldThr = threshold;
-int newCap, newThr = 0;
-if (oldCap &gt; 0) {
-    // 超过最大值就不再扩充了，就只好随你碰撞去吧
-    if (oldCap &gt;= MAXIMUM_CAPACITY) {
-        threshold = Integer.MAX_VALUE;
-        return oldTab;
+<li><pre><code>final Node&lt;K,V&gt;[] resize() {
+    Node&lt;K,V&gt;[] oldTab = table;
+    int oldCap = (oldTab == null) ? 0 : oldTab.length;
+    int oldThr = threshold;
+    int newCap, newThr = 0;
+    if (oldCap &gt; 0) {
+        // 超过最大值就不再扩充了，就只好随你碰撞去吧
+        if (oldCap &gt;= MAXIMUM_CAPACITY) {
+            threshold = Integer.MAX_VALUE;
+            return oldTab;
+        }
+        // 没超过最大值，就扩充为原来的2倍
+        else if ((newCap = oldCap &lt;&lt; 1) &lt; MAXIMUM_CAPACITY &amp;&amp;
+                 oldCap &gt;= DEFAULT_INITIAL_CAPACITY)
+            newThr = oldThr &lt;&lt; 1; // double threshold
     }
-    // 没超过最大值，就扩充为原来的2倍
-    else if ((newCap = oldCap &lt;&lt; 1) &lt; MAXIMUM_CAPACITY &amp;&amp;
-             oldCap &gt;= DEFAULT_INITIAL_CAPACITY)
-        newThr = oldThr &lt;&lt; 1; // double threshold
-}
-else if (oldThr &gt; 0) // initial capacity was placed in threshold
-    newCap = oldThr;
-else {               // zero initial threshold signifies using defaults
-    newCap = DEFAULT_INITIAL_CAPACITY;
-    newThr = (int)(DEFAULT_LOAD_FACTOR * DEFAULT_INITIAL_CAPACITY);
-}
-// 计算新的resize上限
-if (newThr == 0) {
+    else if (oldThr &gt; 0) // initial capacity was placed in threshold
+        newCap = oldThr;
+    else {               // zero initial threshold signifies using defaults
+        newCap = DEFAULT_INITIAL_CAPACITY;
+        newThr = (int)(DEFAULT_LOAD_FACTOR * DEFAULT_INITIAL_CAPACITY);
+    }
+    // 计算新的resize上限
+    if (newThr == 0) {
 
-    float ft = (float)newCap * loadFactor;
-    newThr = (newCap &lt; MAXIMUM_CAPACITY &amp;&amp; ft &lt; (float)MAXIMUM_CAPACITY ?
-              (int)ft : Integer.MAX_VALUE);
-}
-threshold = newThr;
-@SuppressWarnings({&quot;rawtypes&quot;,&quot;unchecked&quot;})
-    Node&lt;K,V&gt;[] newTab = (Node&lt;K,V&gt;[])new Node[newCap];
-table = newTab;
-if (oldTab != null) {
-    // 把每个bucket都移动到新的buckets中
-    for (int j = 0; j &lt; oldCap; ++j) {
-        Node&lt;K,V&gt; e;
-        if ((e = oldTab[j]) != null) {
-            oldTab[j] = null;
-            if (e.next == null)
-                newTab[e.hash &amp; (newCap - 1)] = e;
-            else if (e instanceof TreeNode)
-                ((TreeNode&lt;K,V&gt;)e).split(this, newTab, j, oldCap);
-            else { // preserve order
-                Node&lt;K,V&gt; loHead = null, loTail = null;
-                Node&lt;K,V&gt; hiHead = null, hiTail = null;
-                Node&lt;K,V&gt; next;
-                do {
-                    next = e.next;
-                    // 原索引
-                    if ((e.hash &amp; oldCap) == 0) {
-                        if (loTail == null)
-                            loHead = e;
-                        else
-                            loTail.next = e;
-                        loTail = e;
+        float ft = (float)newCap * loadFactor;
+        newThr = (newCap &lt; MAXIMUM_CAPACITY &amp;&amp; ft &lt; (float)MAXIMUM_CAPACITY ?
+                  (int)ft : Integer.MAX_VALUE);
+    }
+    threshold = newThr;
+    @SuppressWarnings({&quot;rawtypes&quot;,&quot;unchecked&quot;})
+        Node&lt;K,V&gt;[] newTab = (Node&lt;K,V&gt;[])new Node[newCap];
+    table = newTab;
+    if (oldTab != null) {
+        // 把每个bucket都移动到新的buckets中
+        for (int j = 0; j &lt; oldCap; ++j) {
+            Node&lt;K,V&gt; e;
+            if ((e = oldTab[j]) != null) {
+                oldTab[j] = null;
+                if (e.next == null)
+                    newTab[e.hash &amp; (newCap - 1)] = e;
+                else if (e instanceof TreeNode)
+                    ((TreeNode&lt;K,V&gt;)e).split(this, newTab, j, oldCap);
+                else { // preserve order
+                    Node&lt;K,V&gt; loHead = null, loTail = null;
+                    Node&lt;K,V&gt; hiHead = null, hiTail = null;
+                    Node&lt;K,V&gt; next;
+                    do {
+                        next = e.next;
+                        // 原索引
+                        if ((e.hash &amp; oldCap) == 0) {
+                            if (loTail == null)
+                                loHead = e;
+                            else
+                                loTail.next = e;
+                            loTail = e;
+                        }
+                        // 原索引+oldCap
+                        else {
+                            if (hiTail == null)
+                                hiHead = e;
+                            else
+                                hiTail.next = e;
+                            hiTail = e;
+                        }
+                    } while ((e = next) != null);
+                    // 原索引放到bucket里
+                    if (loTail != null) {
+                        loTail.next = null;
+                        newTab[j] = loHead;
                     }
-                    // 原索引+oldCap
-                    else {
-                        if (hiTail == null)
-                            hiHead = e;
-                        else
-                            hiTail.next = e;
-                        hiTail = e;
+                    // 原索引+oldCap放到bucket里
+                    if (hiTail != null) {
+                        hiTail.next = null;
+                        newTab[j + oldCap] = hiHead;
                     }
-                } while ((e = next) != null);
-                // 原索引放到bucket里
-                if (loTail != null) {
-                    loTail.next = null;
-                    newTab[j] = loHead;
-                }
-                // 原索引+oldCap放到bucket里
-                if (hiTail != null) {
-                    hiTail.next = null;
-                    newTab[j + oldCap] = hiHead;
                 }
             }
         }
     }
+    return newTab;
 }
-return newTab;
-</code></pre><p>  }</p>
-</li>
+</code></pre></li>
 </ul>
 <p>当HashMap中的元素越来越多的时候，hash冲突的几率也就越来越高，因为数组的长度是固定的。所以为了提高查询的效率，就要对HashMap的数组进行扩容，数组扩容这个操作也会出现在ArrayList中，这是一个常用的操作，而在HashMap数组扩容之后，最消耗性能的点就出现了：原数组中的数据必须重新计算其在新数组中的位置，并放进去，这就是resize。</p>
 <p>   那么HashMap什么时候进行扩容呢？当HashMap中的元素个数超过数组大小*loadFactor时，就会进行数组扩容，loadFactor的默认值为0.75，这是一个折中的取值。也就是说，默认情况下，数组大小为16，那么当HashMap中元素个数超过16*0.75=12的时候，就把数组的大小扩展为 2*16=32，即扩大一倍，然后重新计算每个元素在数组中的位置，扩容是需要进行数组复制的，复制数组是非常消耗性能的操作，所以如果我们已经预知HashMap中元素的个数，那么预设元素的个数能够有效的提高HashMap的性能。</p>
 <p>get方法的实现</p>
 <ul>
-<li><p>  public V get(Object key) {</p>
-<pre><code>Node&lt;K,V&gt; e;
-return (e = getNode(hash(key), key)) == null ? null : e.value;
-</code></pre><p>  }</p>
-<p>  final Node<k,v> getNode(int hash, Object key) {</k,v></p>
-<pre><code>Node&lt;K,V&gt;[] tab; Node&lt;K,V&gt; first, e; int n; K k;
-if ((tab = table) != null &amp;&amp; (n = tab.length) &gt; 0 &amp;&amp;
-    (first = tab[(n - 1) &amp; hash]) != null) {
-    // 直接命中
-    if (first.hash == hash &amp;&amp; // always check first node
-        ((k = first.key) == key || (key != null &amp;&amp; key.equals(k))))
-        return first;
-    // 未命中
-    if ((e = first.next) != null) {
-        // 在树中get
-        if (first instanceof TreeNode)
-            return ((TreeNode&lt;K,V&gt;)first).getTreeNode(hash, key);
-        // 在链表中get
-        do {
-            if (e.hash == hash &amp;&amp;
-                ((k = e.key) == key || (key != null &amp;&amp; key.equals(k))))
-                return e;
-        } while ((e = e.next) != null);
-    }
+<li><pre><code>public V get(Object key) {
+    Node&lt;K,V&gt; e;
+    return (e = getNode(hash(key), key)) == null ? null : e.value;
 }
-return null;
-</code></pre><p>  }</p>
-</li>
+
+final Node&lt;K,V&gt; getNode(int hash, Object key) {
+    Node&lt;K,V&gt;[] tab; Node&lt;K,V&gt; first, e; int n; K k;
+    if ((tab = table) != null &amp;&amp; (n = tab.length) &gt; 0 &amp;&amp;
+        (first = tab[(n - 1) &amp; hash]) != null) {
+        // 直接命中
+        if (first.hash == hash &amp;&amp; // always check first node
+            ((k = first.key) == key || (key != null &amp;&amp; key.equals(k))))
+            return first;
+        // 未命中
+        if ((e = first.next) != null) {
+            // 在树中get
+            if (first instanceof TreeNode)
+                return ((TreeNode&lt;K,V&gt;)first).getTreeNode(hash, key);
+            // 在链表中get
+            do {
+                if (e.hash == hash &amp;&amp;
+                    ((k = e.key) == key || (key != null &amp;&amp; key.equals(k))))
+                    return e;
+            } while ((e = e.next) != null);
+        }
+    }
+    return null;
+}
+</code></pre></li>
 </ul>
 <p>大致思路如下：</p>
 <ol>
