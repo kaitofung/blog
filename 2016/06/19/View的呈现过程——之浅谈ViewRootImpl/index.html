@@ -87,22 +87,19 @@
 
 
 <meta name="description" content="上一遍文章结束的时候谈到View要经过测量，布局，绘制才能呈现。那么什么时候才会执行这几个步骤呢？相信接触过自定义View的同学都会知道是invalidate()可以引起重绘的。下面通过Read The Fucking Source Code，整理出以下流程：
-通过三种颜色区分，分别在View.ViewGroup,ViewRootImpl调用相应的方法，可见
-1.View的UI刷新是在View树的">
+通过三种颜色区分，分别在View.ViewGroup,ViewRootImpl调用相应的方法，可见">
 <meta property="og:type" content="article">
 <meta property="og:title" content="View的呈现过程——之浅谈ViewRootImpl">
 <meta property="og:url" content="kaitofung.cn/2016/06/19/View的呈现过程——之浅谈ViewRootImpl/index.html">
 <meta property="og:site_name" content="Kaito's blog">
 <meta property="og:description" content="上一遍文章结束的时候谈到View要经过测量，布局，绘制才能呈现。那么什么时候才会执行这几个步骤呢？相信接触过自定义View的同学都会知道是invalidate()可以引起重绘的。下面通过Read The Fucking Source Code，整理出以下流程：
-通过三种颜色区分，分别在View.ViewGroup,ViewRootImpl调用相应的方法，可见
-1.View的UI刷新是在View树的">
+通过三种颜色区分，分别在View.ViewGroup,ViewRootImpl调用相应的方法，可见">
 <meta property="og:image" content="http://oekcs3wuy.bkt.clouddn.com/View%E7%9A%84invalidate%E6%B5%81%E7%A8%8B%E5%9B%BE.png">
-<meta property="og:updated_time" content="2016-10-07T13:39:39.397Z">
+<meta property="og:updated_time" content="2017-01-07T04:59:05.601Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="View的呈现过程——之浅谈ViewRootImpl">
 <meta name="twitter:description" content="上一遍文章结束的时候谈到View要经过测量，布局，绘制才能呈现。那么什么时候才会执行这几个步骤呢？相信接触过自定义View的同学都会知道是invalidate()可以引起重绘的。下面通过Read The Fucking Source Code，整理出以下流程：
-通过三种颜色区分，分别在View.ViewGroup,ViewRootImpl调用相应的方法，可见
-1.View的UI刷新是在View树的">
+通过三种颜色区分，分别在View.ViewGroup,ViewRootImpl调用相应的方法，可见">
 <meta name="twitter:image" content="http://oekcs3wuy.bkt.clouddn.com/View%E7%9A%84invalidate%E6%B5%81%E7%A8%8B%E5%9B%BE.png">
 
 
@@ -284,7 +281,7 @@
 
       
         <p><a href="http://blog.kaitofung.cn/2016/05/05/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-View%E7%9A%84%E5%91%88%E7%8E%B0%E8%BF%87%E7%A8%8B%E2%80%94%E2%80%94%E4%B9%8BsetContentView/" title="View的呈现过程——之setContentView " target="_blank" rel="external">上一遍文章</a>结束的时候谈到View要经过测量，布局，绘制才能呈现。那么什么时候才会执行这几个步骤呢？相信接触过自定义View的同学都会知道是invalidate()可以引起重绘的。<br>下面通过Read The Fucking Source Code，整理出以下流程：<br><img src="http://oekcs3wuy.bkt.clouddn.com/View%E7%9A%84invalidate%E6%B5%81%E7%A8%8B%E5%9B%BE.png" alt="View的invalidate流程"></p>
-<p>通过三种颜色区分，分别在View.ViewGroup,ViewRootImpl调用相应的方法，可见</p>
+<p>通过三种颜色区分，分别在View.ViewGroup,ViewRootImpl调用相应的方法，可见<a id="more"></a></p>
 <p><strong>1.View的UI刷新是在View树的顶层View的ViewParent（即ViewRootImpl）进行刷新的；</strong></p>
 <p><strong>2.当View的AttachInfo为空的时候是没有进行线程安全检验的且中断了invalidate；</strong></p>
 <p><strong>3.线程安全监测是在ViewRootImpl的invalidateChildInParent方法执行的.</strong></p>

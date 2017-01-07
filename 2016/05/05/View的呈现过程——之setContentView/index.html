@@ -98,7 +98,7 @@ public void setContentView(@LayoutRes int layoutResID) {
 ###阅读源代码验证
 public void setContentView(@LayoutRes int layoutResID) {
     getWindow().setContentView(layoutResID);  //通过attach()实例化的PhoneWindow实例来setContentVi">
-<meta property="og:updated_time" content="2016-10-06T13:17:06.950Z">
+<meta property="og:updated_time" content="2017-01-07T04:58:44.753Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="View的呈现过程——之setContentView">
 <meta name="twitter:description" content="###猜想：View是在Activity的setContentView()方法后呈现的
@@ -290,7 +290,7 @@ public void setContentView(@LayoutRes int layoutResID) {
     getWindow().setContentView(layoutResID);  //通过attach()实例化的PhoneWindow实例来setContentView
     initWindowDecorActionBar();  //初始化ActionBar
 }
-</code></pre><p> 从以上代码片段可以看出做了两件事情，继续查看PhoneWindow的setContentView(layoutResID)</p>
+</code></pre><p> 从以上代码片段可以看出做了两件事情，<a id="more"></a>继续查看PhoneWindow的setContentView(layoutResID)</p>
 <pre><code>// This is the view in which the window contents are placed. It is either
 // mDecor itself, or a child of mDecor where the contents go.
 private ViewGroup mContentParent;

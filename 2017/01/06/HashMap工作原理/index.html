@@ -99,7 +99,7 @@ Hash table based implementation of the Map interface. This implementation provid
 
 Hash table based implementation of the Map interface. This implementation provides all of the optional map operations, and permits null values and the null key. (The HashMap class">
 <meta property="og:image" content="http://oekcs3wuy.bkt.clouddn.com/HashMap%E7%BB%93%E6%9E%84.png">
-<meta property="og:updated_time" content="2017-01-07T04:14:14.205Z">
+<meta property="og:updated_time" content="2017-01-07T04:53:51.487Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="HashMap工作原理">
 <meta name="twitter:description" content="官方文档对HashMap的一段描述：
@@ -290,7 +290,7 @@ Hash table based implementation of the Map interface. This implementation provid
 <p>Hash table based implementation of the Map interface. This implementation provides all of the optional map operations, and permits null values and the null key. (The HashMap class is roughly equivalent to Hashtable, except that it is unsynchronized and permits nulls.) This class makes no guarantees as to the order of the map; in particular, it does not guarantee that the order will remain constant over time.</p>
 </blockquote>
 <p>可以看出HashMap具有的特点：基于Map接口实现、允许null键/值、非同步、不保证有序(比如插入的顺序)、也不保证序不随时间变化。</p>
-<h1 id="一、HashMap数据结构"><a href="#一、HashMap数据结构" class="headerlink" title="一、HashMap数据结构"></a>一、HashMap数据结构</h1><p>HashMap的底层主要是基于数组和链表来实现的，它之所以有相当快的查询速度主要是因为它是通过计算散列码来决定存储的位置。HashMap中主要是通过key的hashCode来计算hash值的，只要hashCode相同，计算出来的hash值就一样。如果存储的对象对多了，就有可能不同的对象所算出来的hash值是相同的，这就出现了所谓的hash冲突。学过数据结构的同学都知道，解决hash冲突的方法有很多，HashMap底层是通过链表来解决hash冲突的。</p>
+<h1 id="一、HashMap数据结构"><a href="#一、HashMap数据结构" class="headerlink" title="一、HashMap数据结构"></a>一、HashMap数据结构</h1><p>HashMap的底层主要是基于数组和链表来实现的，它之所以有相当快的查询速度主要是因为它是通过计算散列码来决定存储的位置。HashMap中主要是通过key的hashCode来计算hash值的，只要hashCode相同，计算出来的hash值就一样。如果存储的对象对多了，就有可能不同的对象所算出来的hash值是相同的，这就出现了所谓的hash冲突。学过数据结构的同学都知道，解决hash冲突的方法有很多，HashMap底层是通过链表来解决hash冲突的。<br><a id="more"></a></p>
 <p><img src="http://oekcs3wuy.bkt.clouddn.com/HashMap%E7%BB%93%E6%9E%84.png" alt=""></p>
 <h1 id="二、源码分析"><a href="#二、源码分析" class="headerlink" title="二、源码分析"></a>二、源码分析</h1><pre><code>transient Entry[] table;//存储元素的实体数组
 
@@ -304,11 +304,7 @@ transient int modCount;//被修改的次数
 </code></pre><p>其中loadFactor加载因子是表示Hsah表中元素的填满的程度.<br>若:加载因子越大,填满的元素越多,好处是,空间利用率高了,但:冲突的机会加大了.链表长度会越来越长,查找效率降低。</p>
 <p>反之,加载因子越小,填满的元素越少,好处是:冲突的机会减小了,但:空间浪费多了.表中的数据将过于稀疏（很多空间还没用，就开始扩容了）<br>冲突的机会越大,则查找的成本越高.</p>
 <p>因此,必须在 “冲突的机会”与”空间利用率”之间寻找一种平衡与折衷. 这种平衡与折衷本质上是数据结构中有名的”时-空”矛盾的平衡与折衷.<br>如果机器内存足够，并且想要提高查询速度的话可以将加载因子设置小一点；相反如果机器内存紧张，并且对查询速度没有什么要求的话可以将加载因子设置大一点。不过一般我们都不用去设置它，让它取默认值0.75就好了。</p>
-<p>put方法的实现    </p>
-<ul>
-<li></li>
-</ul>
-<pre><code>public V put(K key, V value) {
+<h2 id="put方法的实现"><a href="#put方法的实现" class="headerlink" title="put方法的实现    "></a>put方法的实现    </h2><pre><code>public V put(K key, V value) {
     // 对key的hashCode()做hash
     return putVal(hash(key), key, value, false, true);
 }
@@ -377,9 +373,7 @@ final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
 3     }
 </code></pre><p>这个我们要重点说下，我们一般对哈希表的散列很自然地会想到用hash值对length取模（即除法散列法），Hashtable中也是这样实现的，这种方法基本能保证元素在哈希表中散列的比较均匀，但取模会用到除法运算，效率很低，HashMap中则通过h&amp;(length-1)的方法来代替取模，同样实现了均匀的散列，但效率要高很多，这也是HashMap对Hashtable的一个改进。</p>
 <p>  接下来，我们分析下为什么哈希表的容量一定要是2的整数次幂。首先，length为2的整数次幂的话，h&amp;(length-1)就相当于对length取模，这样便保证了散列的均匀，同时也提升了效率；其次，length为2的整数次幂的话，为偶数，这样length-1为奇数，奇数的最后一位是1，这样便保证了h&amp;(length-1)的最后一位可能为0，也可能为1（这取决于h的值），即与后的结果可能为偶数，也可能为奇数，这样便可以保证散列的均匀性，而如果length为奇数的话，很明显length-1为偶数，它的最后一位是0，这样h&amp;(length-1)的最后一位肯定为0，即只能为偶数，这样任何hash值都只会被散列到数组的偶数下标位置上，这便浪费了近一半的空间，因此，length取2的整数次幂，是为了使不同hash值发生碰撞的概率较小，这样就能使元素在哈希表中均匀地散列。</p>
-<p>resize()方法的实现</p>
-<ul>
-<li><pre><code>final Node&lt;K,V&gt;[] resize() {
+<h2 id="resize-方法的实现"><a href="#resize-方法的实现" class="headerlink" title="resize()方法的实现"></a>resize()方法的实现</h2><pre><code>final Node&lt;K,V&gt;[] resize() {
     Node&lt;K,V&gt;[] oldTab = table;
     int oldCap = (oldTab == null) ? 0 : oldTab.length;
     int oldThr = threshold;
@@ -461,13 +455,9 @@ final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
     }
     return newTab;
 }
-</code></pre></li>
-</ul>
-<p>当HashMap中的元素越来越多的时候，hash冲突的几率也就越来越高，因为数组的长度是固定的。所以为了提高查询的效率，就要对HashMap的数组进行扩容，数组扩容这个操作也会出现在ArrayList中，这是一个常用的操作，而在HashMap数组扩容之后，最消耗性能的点就出现了：原数组中的数据必须重新计算其在新数组中的位置，并放进去，这就是resize。</p>
+</code></pre><p>当HashMap中的元素越来越多的时候，hash冲突的几率也就越来越高，因为数组的长度是固定的。所以为了提高查询的效率，就要对HashMap的数组进行扩容，数组扩容这个操作也会出现在ArrayList中，这是一个常用的操作，而在HashMap数组扩容之后，最消耗性能的点就出现了：原数组中的数据必须重新计算其在新数组中的位置，并放进去，这就是resize。</p>
 <p>   那么HashMap什么时候进行扩容呢？当HashMap中的元素个数超过数组大小*loadFactor时，就会进行数组扩容，loadFactor的默认值为0.75，这是一个折中的取值。也就是说，默认情况下，数组大小为16，那么当HashMap中元素个数超过16*0.75=12的时候，就把数组的大小扩展为 2*16=32，即扩大一倍，然后重新计算每个元素在数组中的位置，扩容是需要进行数组复制的，复制数组是非常消耗性能的操作，所以如果我们已经预知HashMap中元素的个数，那么预设元素的个数能够有效的提高HashMap的性能。</p>
-<p>get方法的实现</p>
-<ul>
-<li><pre><code>public V get(Object key) {
+<h2 id="get方法的实现"><a href="#get方法的实现" class="headerlink" title="get方法的实现"></a>get方法的实现</h2><pre><code>public V get(Object key) {
     Node&lt;K,V&gt; e;
     return (e = getNode(hash(key), key)) == null ? null : e.value;
 }
@@ -495,9 +485,7 @@ final Node&lt;K,V&gt; getNode(int hash, Object key) {
     }
     return null;
 }
-</code></pre></li>
-</ul>
-<p>大致思路如下：</p>
+</code></pre><p>大致思路如下：</p>
 <ol>
 <li>bucket里的第一个节点，直接命中；</li>
 <li>如果有冲突，则通过key.equals(k)去查找对应的entry<br>若为树，则在树中通过key.equals(k)查找，O(logn)；<br>若为链表，则在链表中通过key.equals(k)查找，O(n)。</li>
@@ -683,7 +671,7 @@ final Node&lt;K,V&gt; getNode(int hash, Object key) {
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、HashMap数据结构"><span class="nav-number">1.</span> <span class="nav-text">一、HashMap数据结构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、源码分析"><span class="nav-number">2.</span> <span class="nav-text">二、源码分析</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、HashMap数据结构"><span class="nav-number">1.</span> <span class="nav-text">一、HashMap数据结构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、源码分析"><span class="nav-number">2.</span> <span class="nav-text">二、源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#put方法的实现"><span class="nav-number">2.1.</span> <span class="nav-text">put方法的实现    </span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#resize-方法的实现"><span class="nav-number">2.2.</span> <span class="nav-text">resize()方法的实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#get方法的实现"><span class="nav-number">2.3.</span> <span class="nav-text">get方法的实现</span></a></li></ol></li></ol></div>
             
           </div>
         </section>
