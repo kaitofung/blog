@@ -68,12 +68,10 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="数据库," />
 
 
 
-
-  
 
 
   <link rel="alternate" href="/atom.xml" title="Kaito's blog" type="application/atom+xml" />
@@ -88,13 +86,16 @@
 
 
 
+<meta name="description" content="数据的传输过程速度是影响一个产品的一个重要指标，所以对MySQL/Oracle的优化是有很大的必要性的。 减少 IO 次数">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MySQL优化小结">
 <meta property="og:url" content="kaitofung.cn/2017/08/13/MySQL优化小结/index.html">
 <meta property="og:site_name" content="Kaito's blog">
-<meta property="og:updated_time" content="2017-08-13T12:45:37.120Z">
+<meta property="og:description" content="数据的传输过程速度是影响一个产品的一个重要指标，所以对MySQL/Oracle的优化是有很大的必要性的。 减少 IO 次数">
+<meta property="og:updated_time" content="2017-08-16T07:57:56.647Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MySQL优化小结">
+<meta name="twitter:description" content="数据的传输过程速度是影响一个产品的一个重要指标，所以对MySQL/Oracle的优化是有很大的必要性的。 减少 IO 次数">
 
 
 
@@ -274,7 +275,128 @@
       
 
       
-        
+        <p>数据的传输过程速度是影响一个产品的一个重要指标，所以对MySQL/Oracle的优化是有很大的必要性的。<br> 减少 IO 次数<a id="more"></a><br>    IO永远是数据库最容易瓶颈的地方，这是由数据库的职责所决定的，大部分数据库操作中超过90%的时间都是 IO 操作所占用的，减少 IO 次数是 SQL 优化中需要第一优先考虑，当然，也是收效最明显的优化手段。</p>
+<p>降低 CPU 计算<br>    除了 IO 瓶颈之外，SQL优化中需要考虑的就是 CPU 运算量的优化了。order by, group by,distinct … 都是消耗 CPU 的大户（这些操作基本上都是 CPU 处理内存中的数据比较运算）。当我们的 IO 优化做到一定阶段之后，降低 CPU 计算也就成为了我们 SQL 优化的重要目标</p>
+<p>一般优化手段有：</p>
+<ol>
+<li>SQL的优化</li>
+<li>索引优化</li>
+<li>表的设计优化</li>
+<li>配置参数优化</li>
+<li>存储引擎的选择</li>
+<li>硬件系统的优化</li>
+</ol>
+<h2 id="SQL的优化"><a href="#SQL的优化" class="headerlink" title="SQL的优化"></a>SQL的优化</h2><hr>
+<ul>
+<li><strong>通过开启慢查询日志来找出较慢的SQL</strong></li>
+<li><strong>不做列运算</strong><br>：SELECT id WHERE age + 1 = 10，任何对列的操作都将导致表扫描，它包括数据库教程函数、计算表达式等等，查询时要尽可能将操作移至等号右边</li>
+<li><strong>sql语句尽可能简单：一条sql只能在一个cpu运算；大语句拆小语句，减少锁时间；一条大sql可以堵死整个库</strong></li>
+<li><strong>不要使用select*</strong><br>对于Oracle而言，Oracle只是会多一个查数据字典的开销(数据库需要知道<em>等于什么)，常数级复杂度；<br>对于MySQL而言，select </em>杜绝了索引覆盖的可能性，而索引覆盖又是速度极快，效率极高，业界极为推荐的查询方式。</li>
+</ul>
+<p>例如，有一个表为t(a,b,c,d,e,f),其中，b列有索引，那么，在磁盘上有两棵b+树，即聚集索引和辅助索引，分别保存(a,b,c,d,e,f)和(b,a)，如果查询条件中where条件可以通过b列的索引过滤掉一部分记录，查询就会先走辅助索引，如果用户只需要a列和b列的数据，直接通过辅助索引就可以知道用户查询的数据，如果用户select *，获取了不需要的数据，则首先通过辅助索引过滤数据，然后通过聚集索引获取所有的列，这就多了一次b+树查询，速度必然会慢很多。</p>
+<p>由于辅助索引的数据比聚集索引少很多，很多情况下，通过辅助索引进行索引覆盖（通过索引就能获取用户需要的所有列），都不需要读磁盘，而聚集索引很可能数据在外存中（取决于buffer pool的大小和命中率），这种情况下，一个是内存读，一个是磁盘读，速度差异就很显著了，几乎是数量级的差异。</p>
+<ul>
+<li><strong>OR改写成IN：OR的效率是n级别，IN的效率是log(n)级别，in的个数建议控制在200以内</strong></li>
+<li><strong>（尽量）不用函数和触发器，在应用程序实现</strong></li>
+<li><strong>避免%xxx式查询，因为无法使用索引</strong></li>
+<li><strong>用Join代替子查询，用适当的冗余字段代替Join</strong></li>
+<li><strong>尽量避免在WHERE子句中使用!=或&lt;&gt;操作符，否则将引擎放弃使用索引而进行全表扫描</strong></li>
+<li>对于连续数值，使用BETWEEN不用IN：SELECT id FROM t WHERE num BETWEEN 1 AND 5</li>
+<li><strong>列表数据不要拿全表，要使用LIMIT来分页，每页数量也不要太大</strong></li>
+<li><strong>ORDER BY的实现与优化</strong><br>优化Query语句中的ORDERBY的时候，尽可能利用已有的索引来避免实际的排序计算，可以很大幅度的提升ORDER BY操作的性能。<br>优化排序：<br>1.加大max_length_for_sort_data参数的设置；<br>2.去掉不必要的返回字段；<br>3.增大sort_buffer_size参数设置；</li>
+<li><strong>GROUP BY的实现与优化</strong><br>由于GROUP BY实际上也同样需要进行排序操作，而且与ORDER BY相比，GROUP BY主要只是多了排序之后的分组操作。当然，如果在分组的时候还使用了其他的一些聚合函数，那么还需要一些聚合函数的计算。所以，在GROUP BY的实现过程中，与ORDER BY一样也可以利用到索引。</li>
+<li><strong>DISTINCT实际上和GROUP BY的操作非常相似</strong><br>只不过是在GROUP BY之后的每组中只取出一条记录而已。所以，DISTINCT的实现和GROUP BY的实现也基本差不多，没有太大的区别。同样可以通过松散索引扫描或者是紧凑索引扫描来实现，当然，在无法仅仅使用索引即能完成DISTINCT的时候，MySQL只能通过临时表来完成。但是，和GROUP BY有一点差别的是，DISTINCT并不需要进行排序。也就是说，在仅仅只是DISTINCT操作的Query如果无法仅仅利用索引完成操作的时候，MySQL会利用临时表来做一次数据的“缓存”，但是不会对临时表中的数据进行filesort操作。</li>
+<li><strong>尽量用 union all 代替 union</strong><br>union 和 union all 的差异主要是前者需要将两个(或者多个)结果集合并后再进行唯一性过滤操作，这就会涉及到排序，增加大量的 CPU 运算，加大资源消耗及延迟。所以当我们可以确认不可能出现重复结果集或者不在乎重复结果集的时候，尽量使用 union all 而不是 union。</li>
+<li><strong>优先优化高并发的 SQL，而不是执行频率低某些“大”SQL</strong></li>
+<li><strong>尽量使用数字型字段</strong><br>若只含数值信息的字段尽量不要设计为字符型，这会降低查询和连接的性能，并会增加存储开销。这是因为引擎在处理查询和连接时会 逐个比较字符串中每一个字符，而对于数字型而言只需要比较一次就够了。</li>
+<li><strong>尽可能的使用 varchar/nvarchar 代替 char/nchar</strong><br>因为首先变长字段存储空间小，可以节省存储空间，其次对于查询来说，在一个相对较小的字段内搜索效率显然要高些。</li>
+<li><strong>避免频繁创建和删除临时表，以减少系统表资源的消耗。</strong></li>
+<li><strong>尽量避免大事务操作，提高系统并发能力。(尝试分割事务)</strong></li>
+<li><strong>尽量避免向客户端返回大数据量，若数据量过大，应该考虑相应需求是否合理（考虑分页）。</strong></li>
+</ul>
+<hr>
+<h2 id="索引优化"><a href="#索引优化" class="headerlink" title="索引优化"></a>索引优化</h2><ul>
+<li>索引并不是越多越好，要根据查询有针对性的创建，考虑在WHERE和ORDER BY命令上涉及的列建立索引，可根据EXPLAIN来查看是否用了索引还是全表扫描</li>
+<li>应尽量避免在WHERE子句中对字段进行NULL值判断，否则将导致引擎放弃使用索引而进行全表扫描</li>
+<li>值分布很稀少的字段不适合建索引，例如”性别”这种只有两三个值的字段（元素的区分度要高，区分度高的字段要靠前）</li>
+<li>字符字段只建前缀索引</li>
+<li>字符字段最好不要做主键</li>
+<li>不用外键，由程序保证约束</li>
+<li>尽量不用UNIQUE，由程序保证约束</li>
+<li>使用多列索引时主意顺序和查询条件保持一致，同时删除不必要的单列索引</li>
+<li>对于类似于这样的存在非常大更新量的数据，索引的维护成本会非常高，如果其检索需求很少，而且对检索效率并没有非常高的要求的时候，我们并不建议创建索引，或者是尽量减少索引。</li>
+<li>对于数据量极小到通过索引检索还不如直接遍历来得快的数据，也并不适合使用索引。</li>
+<li>建立索引的时候要对全表搜索，比较耗时，要在DML频率较低的时候进行；</li>
+<li>建立索引需要占用物理空间，除了数据库本身占用空间外，每个索引还占用一定物理空间；</li>
+<li>当对表中进行增加，删除和修改的时候，索引也要动态维护，所以速率有所下降。</li>
+</ul>
+<hr>
+<h2 id="表的设计优化"><a href="#表的设计优化" class="headerlink" title="表的设计优化"></a>表的设计优化</h2><ul>
+<li><strong>字段选择轻量级的数据类型</strong></li>
+</ul>
+<p>由于MySQL数据库是基于行（Row）存储的数据库，而数据库操作 IO 的时候是以 page（block）的方式，也就是说，如果我们每条记录所占用的空间量减小，就会使每个page中可存放的数据行数增大，那么每次 IO 可访问的行数也就增多了。反过来说，处理相同行数的数据，需要访问的 page 就会减少，也就是 IO 操作次数降低，直接提升性能。此外，由于我们的内存是有限的，增加每个page中存放的数据行数，就等于增加每个内存块的缓存数据量，同时还会提升内存换中数据命中的几率，也就是缓存命中率。<br>数字类型：非万不得已不要使用DOUBLE，不仅仅只是存储长度的问题，同时还会存在精确性的问题。同样，固定精度的小数，也不建议使用DECIMAL，建议乘以固定倍数转换成整数存储，可以大大节省存储空间，且不会带来任何附加维护成本。对于整数的存储，在数据量较大的情况下，建议区分开 TINYINT / INT / BIGINT 的选择，因为三者所占用的存储空间也有很大的差别，能确定不会使用负数的字段，建议添加unsigned定义。当然，如果数据量较小的数据库，也可以不用严格区分三个整数类型。<br>字符类型：非万不得已不要使用 TEXT 数据类型，其处理方式决定了他的性能要低于char或者是varchar类型的处理。定长字段，建议使用 CHAR 类型，不定长字段尽量使用 VARCHAR，且仅仅设定适当的最大长度，而不是非常随意的给一个很大的最大长度限定，因为不同的长度范围，MySQL也会有不一样的存储处理。<br>时间类型：尽量使用TIMESTAMP类型，因为其存储空间只需要 DATETIME 类型的一半。对于只需要精确到某一天的数据类型，建议使用DATE类型，因为他的存储空间只需要3个字节，比TIMESTAMP还少。不建议通过INT类型类存储一个unix timestamp 的值，因为这太不直观，会给维护带来不必要的麻烦，同时还不会带来任何好处。<br>ENUM &amp; SET：对于状态字段，可以尝试使用 ENUM 来存放，因为可以极大的降低存储空间，而且即使需要增加新的类型，只要增加于末尾，修改结构也不需要重建表数据。如果是存放可预先定义的属性数据呢？可以尝试使用SET类型，即使存在多种属性，同样可以游刃有余，同时还可以节省不小的存储空间。<br>LOB类型：强烈反对在数据库中存放 LOB 类型数据，虽然数据库提供了这样的功能，但这不是他所擅长的，我们更应该让合适的工具做他擅长的事情，才能将其发挥到极致。在数据库中存储 LOB 数据就像让一个多年前在学校学过一点Java的营销专业人员来写 Java 代码一样。</p>
+<ul>
+<li><strong>适当的拆分</strong><br>有些时候，我们可能会希望将一个完整的对象对应于一张数据库表，这对于应用程序开发来说是很有好的，但是有些时候可能会在性能上带来较大的问题。<br>当我们的表中存在类似于 TEXT 或者是很大的 VARCHAR类型的大字段的时候，如果我们大部分访问这张表的时候都不需要这个字段，我们就该义无反顾的将其拆分到另外的独立表中，以减少常用数据所占用的存储空间。这样做的一个明显好处就是每个数据块中可以存储的数据条数可以大大增加，既减少物理 IO 次数，也能大大提高内存中的缓存命中率。</li>
+<li><strong>适度冗余</strong><br>为什么我们要冗余？这不是增加了每条数据的大小，减少了每个数据块可存放记录条数吗，（数据更新时间变长，因为多了要更新的字段）？<br>确实，这样做是会增大每条记录的大小，降低每条记录中可存放数据的条数，但是在有些场景下我们仍然还是不得不这样做：</li>
+</ul>
+<p>被频繁引用且只能通过 Join 2张（或者更多）大表的方式才能得到的独立小字段<br>这样的场景由于每次Join仅仅只是为了取得某个小字段的值，Join到的记录又大，会造成大量不必要的 IO，完全可以通过空间换取时间的方式来优化。不过，冗余的同时需要确保数据的一致性不会遭到破坏，确保更新的同时冗余字段也被更新</p>
+<ul>
+<li>使用 not null约束，因为空的字段会影响索引的效果（索引失效，进行全表扫描）</li>
+</ul>
+<hr>
+<h2 id="配置参数设置的优化"><a href="#配置参数设置的优化" class="headerlink" title="配置参数设置的优化"></a>配置参数设置的优化</h2><ul>
+<li><strong>query_cache_size/query_cache_type （global）</strong><br>Query cache 作用于整个 MySQL Instance，主要用来缓存 MySQL 中的 ResultSet，也就是一条SQL语句执行的结果集，所以仅仅只能针对select语句。当我们打开了 Query Cache 功能，MySQL在接受到一条select语句的请求后，如果该语句满足Query Cache的要求（未显式说明不允许使用Query Cache，或者已经显式申明需要使用Query Cache），MySQL 会直接根据预先设定好的HASH算法将接受到的select语句以字符串方式进行hash，然后到Query Cache 中直接查找是否已经缓存。也就是说，如果已经在缓存中，该select请求就会直接将数据返回，从而省略了后面所有的步骤（如 SQL语句的解析，优化器优化以及向存储引擎请求数据等），极大的提高性能。</li>
+</ul>
+<p>当然，Query Cache 也有一个致命的缺陷，那就是当某个表的数据有任何任何变化，都会导致所有引用了该表的select语句在Query Cache 中的缓存数据失效。所以，当我们的数据变化非常频繁的情况下，使用Query Cache 可能会得不偿失。</p>
+<p>Query Cache的使用需要多个参数配合，其中最为关键的是 query_cache_size 和 query_cache_type ，前者设置用于缓存 ResultSet 的内存大小，后者设置在何场景下使用 Query Cache。在以往的经验来看，如果不是用来缓存基本不变的数据的MySQL数据库，query_cache_size 一般 256MB 是一个比较合适的大小。当然，这可以通过计算Query Cache的命中率（Qcache_hits/(Qcache_hits+Qcache_inserts)*100)）来进行调整。query_cache_type可以设置为0(OFF)，1(ON)或者2(DEMOND)，分别表示完全不使用query cache，除显式要求不使用query cache（使用sql_no_cache）之外的所有的select都使用query cache，只有显示要求才使用query cache（使用sql_cache）。</p>
+<ul>
+<li><strong>binlog_cache_size （global）</strong><br>Binlog Cache 用于在打开了二进制日志（binlog）记录功能的环境，是 MySQL 用来提高binlog的记录效率而设计的一个用于短时间内临时缓存binlog数据的内存区域。</li>
+</ul>
+<p>一般来说，如果我们的数据库中没有什么大事务，写入也不是特别频繁，2MB～4MB是一个合适的选择。但是如果我们的数据库大事务较多，写入量比较大，可与适当调高binlog_cache_size。同时，我们可以通过binlog_cache_use 以及 binlog_cache_disk_use来分析设置的binlog_cache_size是否足够，是否有大量的binlog_cache由于内存大小不够而使用临时文件（binlog_cache_disk_use）来缓存了。</p>
+<ul>
+<li><strong>key_buffer_size （global）</strong><br>Key Buffer 可能是大家最为熟悉的一个 MySQL 缓存参数了，尤其是在 MySQL 没有更换默认存储引擎的时候，很多朋友可能会发现，默认的 MySQL 配置文件中设置最大的一个内存参数就是这个参数了。key_buffer_size 参数用来设置用于缓存 MyISAM存储引擎中索引文件的内存区域大小。如果我们有足够的内存，这个缓存区域最好是能够存放下我们所有的 MyISAM 引擎表的所有索引，以尽可能提高性能。</li>
+</ul>
+<p>此外，当我们在使用MyISAM 存储的时候有一个及其重要的点需要注意，由于 MyISAM 引擎的特性限制了他仅仅只会缓存索引块到内存中，而不会缓存表数据库块。所以，我们的 SQL 一定要尽可能让过滤条件都在索引中，以便让缓存帮助我们提高查询效率。</p>
+<ul>
+<li><strong>bulk_insert_buffer_size （thread）</strong><br>和key_buffer_size一样，这个参数同样也仅作用于使用 MyISAM存储引擎，用来缓存批量插入数据的时候临时缓存写入数据。当我们使用如下几种数据写入语句的时候，会使用这个内存区域来缓存批量结构的数据以帮助批量写入数据文件：</li>
+</ul>
+<p>insert … select …<br>insert … values (…) ,(…),(…)…<br>load data infile… into… (非空表)</p>
+<ul>
+<li><strong>innodb_buffer_pool_size（global）</strong><br>当我们使用InnoDB存储引擎的时候，innodb_buffer_pool_size 参数可能是影响我们性能的最为关键的一个参数了，他用来设置用于缓存 InnoDB 索引及数据块的内存区域大小，类似于 MyISAM 存储引擎的 key_buffer_size 参数，当然，可能更像是 Oracle 的 db_cache_size。简单来说，当我们操作一个 InnoDB 表的时候，返回的所有数据或者去数据过程中用到的任何一个索引块，都会在这个内存区域中走一遭。</li>
+</ul>
+<p>和key_buffer_size 对于 MyISAM 引擎一样，innodb_buffer_pool_size 设置了 InnoDB 存储引擎需求最大的一块内存区域的大小，直接关系到 InnoDB存储引擎的性能，所以如果我们有足够的内存，尽可将该参数设置到足够打，将尽可能多的 InnoDB 的索引及数据都放入到该缓存区域中，直至全部。</p>
+<p>我们可以通过 (Innodb_buffer_pool_read_requests – Innodb_buffer_pool_reads) / Innodb_buffer_pool_read_requests * 100% 计算缓存命中率，并根据命中率来调整 innodb_buffer_pool_size 参数大小进行优化。</p>
+<ul>
+<li><strong>innodb_additional_mem_pool_size（global）</strong><br>这个参数我们平时调整的可能不是太多，很多人都使用了默认值，可能很多人都不是太熟悉这个参数的作用。innodb_additional_mem_pool_size 设置了InnoDB存储引擎用来存放数据字典信息以及一些内部数据结构的内存空间大小，所以当我们一个MySQL Instance中的数据库对象非常多的时候，是需要适当调整该参数的大小以确保所有数据都能存放在内存中提高访问效率的。</li>
+</ul>
+<p>这个参数大小是否足够还是比较容易知道的，因为当过小的时候，MySQL 会记录 Warning 信息到数据库的 error log 中，这时候你就知道该调整这个参数大小了。</p>
+<ul>
+<li><strong>innodb_log_buffer_size （global）</strong><br>这是 InnoDB 存储引擎的事务日志所使用的缓冲区。类似于 Binlog Buffer，InnoDB 在写事务日志的时候，为了提高性能，也是先将信息写入 Innofb Log Buffer 中，当满足 innodb_flush_log_trx_commit 参数所设置的相应条件（或者日志缓冲区写满）之后，才会将日志写到文件（或者同步到磁盘）中。可以通过 innodb_log_buffer_size 参数设置其可以使用的最大内存空间。<br>注：innodb_flush_log_trx_commit 参数对 InnoDB Log 的写入性能有非常关键的影响。该参数可以设置为0，1，2，解释如下：</li>
+</ul>
+<p>0：log buffer中的数据将以每秒一次的频率写入到log file中，且同时会进行文件系统到磁盘的同步操作，但是每个事务的commit并不会触发任何log buffer 到log file的刷新或者文件系统到磁盘的刷新操作；<br>1：在每次事务提交的时候将log buffer 中的数据都会写入到log file，同时也会触发文件系统到磁盘的同步；<br>2：事务提交会触发log buffer 到log file的刷新，但并不会触发磁盘文件系统到磁盘的同步。此外，每秒会有一次文件系统到磁盘同步操作。</p>
+<p>此外，MySQL文档中还提到，这几种设置中的每秒同步一次的机制，可能并不会完全确保非常准确的每秒就一定会发生同步，还取决于进程调度的问题。实际上，InnoDB 能否真正满足此参数所设置值代表的意义正常 Recovery 还是受到了不同 OS 下文件系统以及磁盘本身的限制，可能有些时候在并没有真正完成磁盘同步的情况下也会告诉 mysqld 已经完成了磁盘同步。</p>
+<ul>
+<li><strong>innodb_max_dirty_pages_pct （global）</strong><br>这个参数和上面的各个参数不同，他不是用来设置用于缓存某种数据的内存大小的一个参数，而是用来控制在 InnoDB Buffer Pool 中可以不用写入数据文件中的Dirty Page 的比例（已经被修但还没有从内存中写入到数据文件的脏数据）。这个比例值越大，从内存到磁盘的写入操作就会相对减少，所以能够一定程度下减少写入操作的磁盘IO。</li>
+</ul>
+<p>但是，如果这个比例值过大，当数据库 Crash 之后重启的时间可能就会很长，因为会有大量的事务数据需要从日志文件恢复出来写入数据文件中。同时，过大的比例值同时可能也会造成在达到比例设定上限后的 flush 操作“过猛”而导致性能波动很大。</p>
+<ul>
+<li>……….<a href="http://isky000.com/articles" target="_blank" rel="external">more reference</a>………..</li>
+</ul>
+<hr>
+<h2 id="存储引擎的选择"><a href="#存储引擎的选择" class="headerlink" title="存储引擎的选择"></a>存储引擎的选择</h2><ul>
+<li><strong>MyISAM,MyISAM引擎是MySQL 5.1及之前版本的默认引擎</strong><br>不支持行锁，读取时对需要读到的所有表加锁，写入时则对表加排它锁;<br>不支持事务<br>不支持外键<br>不支持崩溃后的安全恢复<br>在表有读取查询的同时，支持往表中插入新纪录<br>支持BLOB和TEXT的前500个字符索引，支持全文索引<br>支持延迟更新索引，极大提升写入性能<br>对于不会进行修改的表，支持压缩表，极大减少磁盘空间占用<br>表级锁定：其锁定机制是表级索引，这虽然可以让锁定的实现成本很小但是也同时大大降低了其并发性能</li>
+</ul>
+<p>适用场景<br>不需要事务支持（不支持）<br>并发相对较低（锁定机制问题）<br>数据修改相对较少（阻塞问题）<br>以读为主<br>数据一致性要求不是非常高</p>
+<p>最佳实践<br>尽量索引（缓存机制）<br>调整读写优先级，根据实际需求确保重要操作更优先<br>启用延迟插入改善大批量写入性能<br>尽量顺序操作让insert数据都写入到尾部，减少阻塞<br>分解大的操作，降低单个操作的阻塞时间<br>降低并发数，某些高并发场景通过应用来进行排队机制<br>对于相对静态的数据，充分利用Query Cache可以极大的提高访问效率<br>MyISAM的Count只有在全表扫描的时候特别高效，带有其他条件的count都需要进行实际的数据访问</p>
+<ul>
+<li><strong>InnoDB在MySQL 5.5后成为默认索引</strong></li>
+</ul>
+<p>支持行锁，采用MVCC来支持高并发<br>支持事务<br>支持外键<br>支持崩溃后的安全恢复<br>不支持全文索引<br>行级锁定：通过索引实现，全表扫描仍然会是表锁，注意间隙锁的影响<br>读写阻塞与事务隔离级别相关<br>所有Secondary Index都会保存主键信息<br>整个表和主键以Cluster方式存储，组成一颗平衡树<br>具有非常高效的缓存特性：能缓存索引，也能缓存数据</p>
+<p>适用场景<br>需要事务支持（具有较好的事务特性）<br>行级锁定对高并发有很好的适应能力，但需要确保查询是通过索引完成<br>数据更新较为频繁的场景<br>数据一致性要求较高<br>硬件设备内存较大，可以利用InnoDB较好的缓存能力来提高内存利用率，尽可能减少磁盘 IO</p>
+<p>最佳实践<br>主键尽可能小，避免给Secondary index带来过大的空间负担<br>避免全表扫描，因为会使用表锁<br>尽可能缓存所有的索引和数据，提高响应速度<br>在大批量小插入的时候，尽量自己控制事务而不要使用autocommit自动提交<br>合理设置innodb_flush_log_at_trx_commit参数值，不要过度追求安全性<br>避免主键更新，因为这会带来大量的数据移动</p>
+<p><strong>总体来讲，MyISAM适合SELECT密集型的表，而InnoDB适合INSERT和UPDATE密集型的表</strong></p>
+<p>文章参考：<br><a href="https://segmentfault.com/a/1190000006158186" target="_blank" rel="external">MySQL大表优化方案</a><br><a href="https://www.zhihu.com/question/19719997" target="_blank" rel="external">MySQL 对于千万级的大表要怎么优化？</a><br><a href="http://isky000.com/articles" target="_blank" rel="external">MySQL数据库性能优化</a><br><a href="http://www.cnblogs.com/luxiaoxun/p/4694144.html" target="_blank" rel="external">MySQL性能优化总结</a></p>
+
       
     </div>
 
@@ -293,6 +415,12 @@
     </div>
 
     <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/数据库/" rel="tag">#数据库</a>
+          
+        </div>
       
 
       
@@ -410,7 +538,7 @@
           
             <div class="site-state-item site-state-tags">
               
-                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-count">3</span>
                 <span class="site-state-item-name">标签</span>
               
             </div>
@@ -446,7 +574,7 @@
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#SQL的优化"><span class="nav-number">1.</span> <span class="nav-text">SQL的优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#索引优化"><span class="nav-number">2.</span> <span class="nav-text">索引优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#表的设计优化"><span class="nav-number">3.</span> <span class="nav-text">表的设计优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置参数设置的优化"><span class="nav-number">4.</span> <span class="nav-text">配置参数设置的优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#存储引擎的选择"><span class="nav-number">5.</span> <span class="nav-text">存储引擎的选择</span></a></li></ol></div>
             
           </div>
         </section>

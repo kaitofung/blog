@@ -86,20 +86,17 @@
 
 
 
-<meta name="description" content="Java类何时被初始化什么情况下需要开始类加载过程的第一个阶段:”加载”。虚拟机规范中并没强行约束，这点可以交给虚拟机的的具体实现自由把握，但是对于初始化阶段虚拟机规范是严格规定了如下几种情况，如果类未初始化会对类进行初始化。
- 1.创建类的实例 2.访问类的静态变量(除常量【被final修辞的静态变量】原因:常量一种特殊的变量，因为编译器把他们当作值(value)而不是域(field)来对待。">
+<meta name="description" content="Java类何时被初始化什么情况下需要开始类加载过程的第一个阶段:”加载”。虚拟机规范中并没强行约束，这点可以交给虚拟机的的具体实现自由把握，但是对于初始化阶段虚拟机规范是严格规定了如下几种情况，如果类未初始化会对类进行初始化。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java基础：类加载">
 <meta property="og:url" content="kaitofung.cn/2017/06/17/Java基础：类加载/index.html">
 <meta property="og:site_name" content="Kaito's blog">
-<meta property="og:description" content="Java类何时被初始化什么情况下需要开始类加载过程的第一个阶段:”加载”。虚拟机规范中并没强行约束，这点可以交给虚拟机的的具体实现自由把握，但是对于初始化阶段虚拟机规范是严格规定了如下几种情况，如果类未初始化会对类进行初始化。
- 1.创建类的实例 2.访问类的静态变量(除常量【被final修辞的静态变量】原因:常量一种特殊的变量，因为编译器把他们当作值(value)而不是域(field)来对待。">
+<meta property="og:description" content="Java类何时被初始化什么情况下需要开始类加载过程的第一个阶段:”加载”。虚拟机规范中并没强行约束，这点可以交给虚拟机的的具体实现自由把握，但是对于初始化阶段虚拟机规范是严格规定了如下几种情况，如果类未初始化会对类进行初始化。">
 <meta property="og:image" content="http://oekcs3wuy.bkt.clouddn.com/Java%E7%B1%BB%E7%9A%84%E5%8A%A0%E8%BD%BD%E6%B5%81%E7%A8%8B%E5%9B%BE.png">
-<meta property="og:updated_time" content="2017-08-13T13:10:50.127Z">
+<meta property="og:updated_time" content="2017-08-13T13:16:56.932Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java基础：类加载">
-<meta name="twitter:description" content="Java类何时被初始化什么情况下需要开始类加载过程的第一个阶段:”加载”。虚拟机规范中并没强行约束，这点可以交给虚拟机的的具体实现自由把握，但是对于初始化阶段虚拟机规范是严格规定了如下几种情况，如果类未初始化会对类进行初始化。
- 1.创建类的实例 2.访问类的静态变量(除常量【被final修辞的静态变量】原因:常量一种特殊的变量，因为编译器把他们当作值(value)而不是域(field)来对待。">
+<meta name="twitter:description" content="Java类何时被初始化什么情况下需要开始类加载过程的第一个阶段:”加载”。虚拟机规范中并没强行约束，这点可以交给虚拟机的的具体实现自由把握，但是对于初始化阶段虚拟机规范是严格规定了如下几种情况，如果类未初始化会对类进行初始化。">
 <meta name="twitter:image" content="http://oekcs3wuy.bkt.clouddn.com/Java%E7%B1%BB%E7%9A%84%E5%8A%A0%E8%BD%BD%E6%B5%81%E7%A8%8B%E5%9B%BE.png">
 
 
@@ -282,6 +279,7 @@
       
         <ul>
 <li><p>Java类何时被初始化<br>什么情况下需要开始类加载过程的第一个阶段:”加载”。虚拟机规范中并没强行约束，这点可以交给虚拟机的的具体实现自由把握，但是对于初始化阶段虚拟机规范是严格规定了如下几种情况，如果类未初始化会对类进行初始化。</p>
+<a id="more"></a>
 <p> 1.创建类的实例<br> 2.访问类的静态变量(除常量【被final修辞的静态变量】原因:常量一种特殊的变量，因为编译器把他们当作值(value)而不是域(field)来对待。如果你的代码中用到了常变量(constant variable)，编译器并不会生成字节码来从对象中载入域的值，而是直接把这个值插入到字节码中。这是一种很有用的优化，但是如果你需要改变final域的值那么每一块用到那个域的代码都需要重新编译。<br> 3.访问类的静态方法<br> 4.反射如(Class.forName(“my.xyz.Test”))<br> 5.当初始化一个类时，发现其父类还未初始化，则先出发父类的初始化<br> 6.虚拟机启动时，定义了main()方法的那个类先初始化</p>
 </li>
 <li><p>Java类加载流程</p>
@@ -482,7 +480,7 @@
           
             <div class="site-state-item site-state-tags">
               
-                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-count">3</span>
                 <span class="site-state-item-name">标签</span>
               
             </div>
