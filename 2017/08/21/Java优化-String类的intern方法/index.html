@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Android源码解析," />
+  <meta name="keywords" content="Java," />
 
 
 
@@ -86,25 +86,20 @@
 
 
 
-<meta name="description" content="###猜想：View是在Activity的setContentView()方法后呈现的
-###阅读源代码验证
-public void setContentView(@LayoutRes int layoutResID) {
-    getWindow().setContentView(layoutResID);  //通过attach()实例化的PhoneWindow实例来setContentVi">
+<meta name="description" content="intern()的作用与原理intern()方法在JDK1.6前后是有差异的，在JDK1.6前，常量池是在PermGen区的，而JDK1.7是在Heap区的，而该方法在两个版本的表现是：">
 <meta property="og:type" content="article">
-<meta property="og:title" content="View的呈现过程——之setContentView">
-<meta property="og:url" content="kaitofung.cn/2016/05/05/View的呈现过程——之setContentView/index.html">
+<meta property="og:title" content="Java优化-String类的intern方法">
+<meta property="og:url" content="kaitofung.cn/2017/08/21/Java优化-String类的intern方法/index.html">
 <meta property="og:site_name" content="Kaito's blog">
-<meta property="og:description" content="###猜想：View是在Activity的setContentView()方法后呈现的
-###阅读源代码验证
-public void setContentView(@LayoutRes int layoutResID) {
-    getWindow().setContentView(layoutResID);  //通过attach()实例化的PhoneWindow实例来setContentVi">
-<meta property="og:updated_time" content="2017-01-07T04:58:44.753Z">
+<meta property="og:description" content="intern()的作用与原理intern()方法在JDK1.6前后是有差异的，在JDK1.6前，常量池是在PermGen区的，而JDK1.7是在Heap区的，而该方法在两个版本的表现是：">
+<meta property="og:image" content="http://oekcs3wuy.bkt.clouddn.com/Java%E4%BC%98%E5%8C%96-String%E7%B1%BB%E7%9A%84intern%E6%96%B9%E6%B3%95_JDK1.6String%E5%AE%9E%E4%BE%8B%E5%8C%96%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D.png">
+<meta property="og:image" content="http://oekcs3wuy.bkt.clouddn.com/Java%E4%BC%98%E5%8C%96-String%E7%B1%BB%E7%9A%84intern%E6%96%B9%E6%B3%95_JDK1.7String%E5%AE%9E%E4%BE%8B%E5%8C%96%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D.png">
+<meta property="og:image" content="http://oekcs3wuy.bkt.clouddn.com/Java%E4%BC%98%E5%8C%96-String%E7%B1%BB%E7%9A%84intern%E6%96%B9%E6%B3%95_JDK1.7%E5%AD%98%E5%9C%A8%E7%B3%BB%E7%BB%9F%E5%8A%A0%E8%BD%BD%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%B8%B8%E9%87%8F%E7%9A%84String%E5%AE%9E%E4%BE%8B%E5%8C%96%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D.png">
+<meta property="og:updated_time" content="2017-08-21T16:19:52.840Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="View的呈现过程——之setContentView">
-<meta name="twitter:description" content="###猜想：View是在Activity的setContentView()方法后呈现的
-###阅读源代码验证
-public void setContentView(@LayoutRes int layoutResID) {
-    getWindow().setContentView(layoutResID);  //通过attach()实例化的PhoneWindow实例来setContentVi">
+<meta name="twitter:title" content="Java优化-String类的intern方法">
+<meta name="twitter:description" content="intern()的作用与原理intern()方法在JDK1.6前后是有差异的，在JDK1.6前，常量池是在PermGen区的，而JDK1.7是在Heap区的，而该方法在两个版本的表现是：">
+<meta name="twitter:image" content="http://oekcs3wuy.bkt.clouddn.com/Java%E4%BC%98%E5%8C%96-String%E7%B1%BB%E7%9A%84intern%E6%96%B9%E6%B3%95_JDK1.6String%E5%AE%9E%E4%BE%8B%E5%8C%96%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D.png">
 
 
 
@@ -125,9 +120,9 @@ public void setContentView(@LayoutRes int layoutResID) {
 
 
 
-  <link rel="canonical" href="kaitofung.cn/2016/05/05/View的呈现过程——之setContentView/"/>
+  <link rel="canonical" href="kaitofung.cn/2017/08/21/Java优化-String类的intern方法/"/>
 
-  <title> View的呈现过程——之setContentView | Kaito's blog </title>
+  <title> Java优化-String类的intern方法 | Kaito's blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -237,7 +232,7 @@ public void setContentView(@LayoutRes int layoutResID) {
             
             
               
-                View的呈现过程——之setContentView
+                Java优化-String类的intern方法
               
             
           </h1>
@@ -249,8 +244,8 @@ public void setContentView(@LayoutRes int layoutResID) {
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-05-05T22:37:25+08:00" content="2016-05-05">
-              2016-05-05
+            <time itemprop="dateCreated" datetime="2017-08-21T21:20:25+08:00" content="2017-08-21">
+              2017-08-21
             </time>
           </span>
 
@@ -260,8 +255,8 @@ public void setContentView(@LayoutRes int layoutResID) {
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/05/05/View的呈现过程——之setContentView/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/05/05/View的呈现过程——之setContentView/" itemprop="commentsCount"></span>
+                <a href="/2017/08/21/Java优化-String类的intern方法/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/08/21/Java优化-String类的intern方法/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -284,125 +279,34 @@ public void setContentView(@LayoutRes int layoutResID) {
       
 
       
-        <p>###猜想：View是在Activity的setContentView()方法后呈现的</p>
-<p>###阅读源代码验证</p>
-<pre><code>public void setContentView(@LayoutRes int layoutResID) {
-    getWindow().setContentView(layoutResID);  //通过attach()实例化的PhoneWindow实例来setContentView
-    initWindowDecorActionBar();  //初始化ActionBar
-}
-</code></pre><p> 从以上代码片段可以看出做了两件事情，<a id="more"></a>继续查看PhoneWindow的setContentView(layoutResID)</p>
-<pre><code>// This is the view in which the window contents are placed. It is either
-// mDecor itself, or a child of mDecor where the contents go.
-private ViewGroup mContentParent;
+        <h1 id="intern-的作用与原理"><a href="#intern-的作用与原理" class="headerlink" title="intern()的作用与原理"></a>intern()的作用与原理</h1><p>intern()方法在JDK1.6前后是有差异的，在JDK1.6前，常量池是在PermGen区的，而JDK1.7是在Heap区的，而该方法在两个版本的表现是：<a id="more"></a></p>
+<ul>
+<li>JDK1.6，调用intern()方法时，会去常量池查询是否有一个与之等值的字符串（equals()方法返回true），如果有则返回PermGen区的这个常量引用，否则复制一个字符串到PermGen区常量池，并返回。<strong>（PS：返回的引用是一个PermGen的）</strong></li>
+<li>JDK1.7，调用intern方法时，，会去常量池查询是否有一个与之等值的字符串（equals()方法返回true），如果有则返回Heap区的这个常量引用，否则复制一个String引用到Heap区常量池，并返回。<strong>（PS：返回的引用是一个Heap的）</strong><br>&ensp;<br>对于JDK1.6版本，PermGen区内存是有限的，且不易进行内存回收，所以只能慎用intern()方法，或者用HashMap自行实现字符串表。<br>而JDK1.7以后，常量池转移到Heap区，内存容易回收，所以可以适宜使用该方法；该方法的优点是：能节约内存，用“==”代替equal()对比字符串，效率高；而缺点就是：常量池是用StringTable（散列表结构）维护的，当调用intern时候，如果池里的哈希碰撞足够大，效率就会变低,所以适合在一些某些<strong>相同字符</strong>串频繁使用场景是最好的。</li>
+</ul>
+<hr>
+<h1 id="intern-的使用分析（踩坑过程）"><a href="#intern-的使用分析（踩坑过程）" class="headerlink" title="intern()的使用分析（踩坑过程）"></a>intern()的使用分析（踩坑过程）</h1><pre><code>//case1
+ String s = new String(&quot;1&quot;);
+ s.intern();
+ String s2 = &quot;1&quot;;
+ System.out.println(s == s2);
 
-// This is the top-level view of the window, containing the window decor.
-//通过查看View Hierachy可以知道顶层的DecorView为一个FrameLayout的子类实例
-private DecorView mDecor;
-    @Override
-    public void setContentView(int layoutResID) {
-    // Note: FEATURE_CONTENT_TRANSITIONS may be set in the process of installing the window
-    // decor, when theme attributes and the like are crystalized. Do not check the feature
-    // before this happens.
-    if (mContentParent == null) {  //A
-    installDecor();
-    } else if (!hasFeature(FEATURE_CONTENT_TRANSITIONS)) {
-    mContentParent.removeAllViews();
-    }
-    if (hasFeature(FEATURE_CONTENT_TRANSITIONS)) {
-    final Scene newScene = Scene.getSceneForLayout(mContentParent, layoutResID,
-    getContext());
-    transitionTo(newScene);
-    } else {
-    mLayoutInflater.inflate(layoutResID, mContentParent);//B
-    }
-    mContentParent.requestApplyInsets();
-    final Callback cb = getCallback();
-    if (cb != null &amp;&amp; !isDestroyed()) {
-    cb.onContentChanged();
-    }
-    mContentParentExplicitlySet = true;
-    } 
-</code></pre><p>以上代码的主要工作：</p>
-<p>1.mContentParent为空的时候调用installDecor(),</p>
-<p>2 mLayoutInflater.inflate(layoutResID, mContentParent);把布局加载到mContentParent.</p>
-<pre><code>private void installDecor() {
-    if (mDecor == null) {
-        mDecor = generateDecor(); // A
-   /*
-    * setDescendantFocusability用于设置mDecor中的子View的聚焦性
-    * 该方法决定了mDecor与其中包含的子View之间关于焦点获取的关系
-    * FOCUS_AFTER_DESCENDANTS表示只有当mDecor的子View都不愿意获取焦点时 才让mDecor获取焦点
-    */
-        mDecor.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
-       // 设置mDecor为整个Activity窗口的根节点，从此处可以看出窗口根节点为一个DecorView
-        mDecor.setIsRootNamespace(true);
-        if (!mInvalidatePanelMenuPosted &amp;&amp; mInvalidatePanelMenuFeatures != 0) {
-            mDecor.postOnAnimation(mInvalidatePanelMenuRunnable);
-        }
-    }
-    if (mContentParent == null) {
-        mContentParent = generateLayout(mDecor); // B
-        ...
-        } 
-    }
-}
+ String s3 = new String(&quot;1&quot;) + new String(&quot;1&quot;);
+ s3.intern();
+ String s4 = &quot;11&quot;;
+ System.out.println(s3 == s4);
+</code></pre><p>输出结果为：<br>JDK1.6：false false<br>JDK1.7：false true<br><img src="http://oekcs3wuy.bkt.clouddn.com/Java%E4%BC%98%E5%8C%96-String%E7%B1%BB%E7%9A%84intern%E6%96%B9%E6%B3%95_JDK1.6String%E5%AE%9E%E4%BE%8B%E5%8C%96%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D.png" alt="JDK1.6运行时内存图"></p>
+<p>  观察图中，可知，s2和s4是保存在PermGen中的，而s和s3保存在Heap中，所以结果返回就是false了<br>  <img src="http://oekcs3wuy.bkt.clouddn.com/Java%E4%BC%98%E5%8C%96-String%E7%B1%BB%E7%9A%84intern%E6%96%B9%E6%B3%95_JDK1.7String%E5%AE%9E%E4%BE%8B%E5%8C%96%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D.png" alt="此处输入图片的描述"></p>
+<p>  观察上图，在JDK1.7中，s实例化过程中，在堆空间保存了一个实例对象，在String Pool中保存一个字符串常量“1”，所以在s执行intern()方法时返回的是String Pool中的“1”,当执行String s2 = “1”时，由于字符串池中存在与之等值的字符串，所以引用指向池中的”1”，而s在堆空间还是指向对象实例，s2在则指向String Pool中的字符串常量，所以返回false。</p>
+<pre><code>//case2
+String s0 = new StringBuilder().append(&quot;你好&quot;).append(&quot;!&quot;).toString();//(1)
+System.out.println(s0.intern() == s0);
 
-protected DecorView generateDecor() {
-    return new DecorView(getContext(), -1);
-}
-</code></pre><p>installDecor()主要工作：</p>
-<p>1.generateDecor()</p>
-<p>2.generateLayout(mDecor)</p>
-<pre><code>//返回当前Activity的内容区域视图，即我们的布局文件显示区域mContentParent
-protected ViewGroup generateLayout(DecorView decor) {
-        // Apply data from current theme.
-        //从当前Window的Theme中获取一组属性值，赋给a
-        TypedArray a = getWindowStyle();
-        /*
-   * 此处有段代码未贴出，功能为：
-   * 1. 根据Activity的Theme特征，为当前窗口选择布局文件的修饰feature
-   * 2. Inflate the window decor
-   */
-        int layoutResource;
-        int features = getLocalFeatures();
-  /*
-   * 此处有段代码未贴出
-   * 1. getLocalFeatures()返回一个用于描述当前Window特征的整数值
-   * 2. layoutResource为根据features所指代的窗口特征值而为当前窗口选定的资源文件id
-   * 3. 系统包含多个布局资源文件，位于frameworks/base/core/res/layout/
-   * 4. 主要有：R.layout.dialog_titile_icons、R.layout.screen_title_icons
-   *     R.layout.screen_progress、R.layout.dialog_custom_title
-   *     R.layout.dialog_title   
-   *     R.layout.screen_title    最常用的Activity窗口修饰布局文件
-   *        R.layout.screen_simple   全屏的Activity窗口布局文件
-   */
-  //startChanging()方法内容：mChanging = true;
-        mDecor.startChanging();
-  //将layoutResource资源文件包含的View树添加到decor中
-  //width和height均为MATCH_PARENT
-  //并为mContentRoot和contentParent赋值
-        View in = mLayoutInflater.inflate(layoutResource, null);
-        decor.addView(in, new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
-        mContentRoot = (ViewGroup) in;
-        ViewGroup contentParent = (ViewGroup)findViewById(ID_ANDROID_CONTENT);
-        if (contentParent == null) {
-            throw new RuntimeException(&quot;Window couldn&apos;t find content container view&quot;);
-        }
-        if ((features &amp; (1 &lt;&lt; FEATURE_INDETERMINATE_PROGRESS)) != 0) {
-            ProgressBar progress = getCircularProgressBar(false);
-            if (progress != null) {
-                progress.setIndeterminate(true);
-            }
-        }
-        if ((features &amp; (1 &lt;&lt; FEATURE_SWIPE_TO_DISMISS)) != 0) {
-            registerSwipeCallbacks();
-        }
-        //后面包含一段只能应用于顶层窗口的一些Remaining steps
-        //主要用于设置一些title和background属性
-        return contentParent;
-}
-</code></pre><p><strong>综合来看，setContentView的工作是为Activity所持有的PhoneWindow引用创建了DecorView，并通过(ViewGroup)findViewById(ID_ANDROID_CONTENT)返回了mContentParent，然后通过 mLayoutInflater.inflate(layoutResID, mContentParent);把我们的布局inflate到mContentParent中。</strong></p>
-<p>通过源码setContentView的源码可知，此时View是未能呈现的，因为从代码片段未测量，布局，绘制的相关方法。所以此时直接通过getWide，getMeasureWith获取到都是为0。</p>
+String s1 = new StringBuilder().append(&quot;ja&quot;).append(&quot;va&quot;).toString();//(2)
+System.out.println(s1.intern() == s1);
+</code></pre><p>  此case就分析JDK1.7,因为JDK1.6中与上一例子一样都是返回false，原理一致。<br>  此case在JDK1.7输出结果：<br>  true<br>false</p>
+<p>  <img src="http://oekcs3wuy.bkt.clouddn.com/Java%E4%BC%98%E5%8C%96-String%E7%B1%BB%E7%9A%84intern%E6%96%B9%E6%B3%95_JDK1.7%E5%AD%98%E5%9C%A8%E7%B3%BB%E7%BB%9F%E5%8A%A0%E8%BD%BD%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%B8%B8%E9%87%8F%E7%9A%84String%E5%AE%9E%E4%BE%8B%E5%8C%96%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D.png" alt="Java优化-String类的intern方法_JDK1.7存在系统加载字符串常量的String实例化内存分配"></p>
+<p>  观察上图，在（1）执行过程中，在String Pool中生成了两个字符串常量(“你好”，”！”)，和一个在堆中的实例化对象。当执行s0.intern()时，把“你好！”加入String Pool，因为此时在String Pool中没有“你好！”这个字符串常量，所以该操作是复制了s0的引用传给了String Pool，所以s0==s0.intern()返回true。<br>  在（2）执行中，与(1)一样，实例化了一个对象和把两个字符串常量放进String Pool中。而执行s1.intern()时，由于JVM加载的过程中就把”java”放进了String Pool中，所以s1.intern() ==”java”, s1.intern != s1。 s1还是原来的的实例地址，s1.intern()的地址则是JVM加载时候生成的那个。</p>
 
       
     </div>
@@ -425,7 +329,7 @@ protected ViewGroup generateLayout(DecorView decor) {
       
         <div class="post-tags">
           
-            <a href="/tags/Android源码解析/" rel="tag">#Android源码解析</a>
+            <a href="/tags/Java/" rel="tag">#Java</a>
           
         </div>
       
@@ -434,13 +338,13 @@ protected ViewGroup generateLayout(DecorView decor) {
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2017/08/13/MySQL优化小结/" rel="next" title="MySQL优化小结">
+                <i class="fa fa-chevron-left"></i> MySQL优化小结
+              </a>
+            
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/06/19/View的呈现过程——之浅谈ViewRootImpl/" rel="prev" title="View的呈现过程——之浅谈ViewRootImpl">
-                View的呈现过程——之浅谈ViewRootImpl <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -489,8 +393,8 @@ protected ViewGroup generateLayout(DecorView decor) {
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/05/05/View的呈现过程——之setContentView/"
-           data-title="View的呈现过程——之setContentView" data-url="kaitofung.cn/2016/05/05/View的呈现过程——之setContentView/">
+      <div class="ds-thread" data-thread-key="2017/08/21/Java优化-String类的intern方法/"
+           data-title="Java优化-String类的intern方法" data-url="kaitofung.cn/2017/08/21/Java优化-String类的intern方法/">
       </div>
     
   </div>
@@ -581,7 +485,7 @@ protected ViewGroup generateLayout(DecorView decor) {
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#intern-的作用与原理"><span class="nav-number">1.</span> <span class="nav-text">intern()的作用与原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#intern-的使用分析（踩坑过程）"><span class="nav-number">2.</span> <span class="nav-text">intern()的使用分析（踩坑过程）</span></a></li></ol></div>
             
           </div>
         </section>
