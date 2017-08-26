@@ -73,8 +73,6 @@
 
 
 
-  
-
 
   <link rel="alternate" href="/atom.xml" title="Kaito's blog" type="application/atom+xml" />
 
@@ -88,20 +86,21 @@
 
 
 
-<meta name="description" content="intern()的作用与原理intern()方法在JDK1.6前后是有差异的，在JDK1.6前，常量池是在PermGen区的，而JDK1.7是在Heap区的，而该方法在两个版本的表现是：">
+<meta name="description" content="一个Java对象的内存布局包括：对象头，对象的实例数据，还有对齐填充位。
+对象头：对象头里面有MarkWord,ClassPointer,ArrayLength。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Java优化-String类的intern方法">
-<meta property="og:url" content="kaitofung.cn/2017/08/21/Java优化-String类的intern方法/index.html">
+<meta property="og:title" content="Java对象内存布局">
+<meta property="og:url" content="kaitofung.cn/2017/08/26/Java对象内存布局/index.html">
 <meta property="og:site_name" content="Kaito's blog">
-<meta property="og:description" content="intern()的作用与原理intern()方法在JDK1.6前后是有差异的，在JDK1.6前，常量池是在PermGen区的，而JDK1.7是在Heap区的，而该方法在两个版本的表现是：">
-<meta property="og:image" content="http://oekcs3wuy.bkt.clouddn.com/Java%E4%BC%98%E5%8C%96-String%E7%B1%BB%E7%9A%84intern%E6%96%B9%E6%B3%95_JDK1.6String%E5%AE%9E%E4%BE%8B%E5%8C%96%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D.png">
-<meta property="og:image" content="http://oekcs3wuy.bkt.clouddn.com/Java%E4%BC%98%E5%8C%96-String%E7%B1%BB%E7%9A%84intern%E6%96%B9%E6%B3%95_JDK1.7String%E5%AE%9E%E4%BE%8B%E5%8C%96%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D.png">
-<meta property="og:image" content="http://oekcs3wuy.bkt.clouddn.com/Java%E4%BC%98%E5%8C%96-String%E7%B1%BB%E7%9A%84intern%E6%96%B9%E6%B3%95_JDK1.7%E5%AD%98%E5%9C%A8%E7%B3%BB%E7%BB%9F%E5%8A%A0%E8%BD%BD%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%B8%B8%E9%87%8F%E7%9A%84String%E5%AE%9E%E4%BE%8B%E5%8C%96%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D.png">
-<meta property="og:updated_time" content="2017-08-21T16:19:52.840Z">
+<meta property="og:description" content="一个Java对象的内存布局包括：对象头，对象的实例数据，还有对齐填充位。
+对象头：对象头里面有MarkWord,ClassPointer,ArrayLength。">
+<meta property="og:image" content="http://oekcs3wuy.bkt.clouddn.com/Java%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80.png">
+<meta property="og:updated_time" content="2017-08-26T16:40:53.502Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Java优化-String类的intern方法">
-<meta name="twitter:description" content="intern()的作用与原理intern()方法在JDK1.6前后是有差异的，在JDK1.6前，常量池是在PermGen区的，而JDK1.7是在Heap区的，而该方法在两个版本的表现是：">
-<meta name="twitter:image" content="http://oekcs3wuy.bkt.clouddn.com/Java%E4%BC%98%E5%8C%96-String%E7%B1%BB%E7%9A%84intern%E6%96%B9%E6%B3%95_JDK1.6String%E5%AE%9E%E4%BE%8B%E5%8C%96%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D.png">
+<meta name="twitter:title" content="Java对象内存布局">
+<meta name="twitter:description" content="一个Java对象的内存布局包括：对象头，对象的实例数据，还有对齐填充位。
+对象头：对象头里面有MarkWord,ClassPointer,ArrayLength。">
+<meta name="twitter:image" content="http://oekcs3wuy.bkt.clouddn.com/Java%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80.png">
 
 
 
@@ -122,9 +121,9 @@
 
 
 
-  <link rel="canonical" href="kaitofung.cn/2017/08/21/Java优化-String类的intern方法/"/>
+  <link rel="canonical" href="kaitofung.cn/2017/08/26/Java对象内存布局/"/>
 
-  <title> Java优化-String类的intern方法 | Kaito's blog </title>
+  <title> Java对象内存布局 | Kaito's blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -234,7 +233,7 @@
             
             
               
-                Java优化-String类的intern方法
+                Java对象内存布局
               
             
           </h1>
@@ -246,8 +245,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-08-21T21:20:25+08:00" content="2017-08-21">
-              2017-08-21
+            <time itemprop="dateCreated" datetime="2017-08-26T20:25:14+08:00" content="2017-08-26">
+              2017-08-26
             </time>
           </span>
 
@@ -257,8 +256,8 @@
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2017/08/21/Java优化-String类的intern方法/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/08/21/Java优化-String类的intern方法/" itemprop="commentsCount"></span>
+                <a href="/2017/08/26/Java对象内存布局/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/08/26/Java对象内存布局/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -281,34 +280,30 @@
       
 
       
-        <h1 id="intern-的作用与原理"><a href="#intern-的作用与原理" class="headerlink" title="intern()的作用与原理"></a>intern()的作用与原理</h1><p>intern()方法在JDK1.6前后是有差异的，在JDK1.6前，常量池是在PermGen区的，而JDK1.7是在Heap区的，而该方法在两个版本的表现是：<a id="more"></a></p>
+        <p>一个Java对象的内存布局包括：对象头，对象的实例数据，还有对齐填充位。</p>
+<p>对象头：对象头里面有MarkWord,ClassPointer,ArrayLength。<a id="more"></a></p>
 <ul>
-<li>JDK1.6，调用intern()方法时，会去常量池查询是否有一个与之等值的字符串（equals()方法返回true），如果有则返回PermGen区的这个常量引用，否则复制一个字符串到PermGen区常量池，并返回。<strong>（PS：返回的引用是一个PermGen的）</strong></li>
-<li>JDK1.7，调用intern方法时，，会去常量池查询是否有一个与之等值的字符串（equals()方法返回true），如果有则返回Heap区的这个常量引用，否则复制一个String引用到Heap区常量池，并返回。<strong>（PS：返回的引用是一个Heap的）</strong><br>&ensp;<br>对于JDK1.6版本，PermGen区内存是有限的，且不易进行内存回收，所以只能慎用intern()方法，或者用HashMap自行实现字符串表。<br>而JDK1.7以后，常量池转移到Heap区，内存容易回收，所以可以适宜使用该方法；该方法的优点是：能节约内存，用“==”代替equal()对比字符串，效率高；而缺点就是：常量池是用StringTable（散列表结构）维护的，当调用intern时候，如果池里的哈希碰撞足够大，效率就会变低,所以适合在一些某些<strong>相同字符</strong>串频繁使用场景是最好的。</li>
+<li><p>Mark Word用于存储对象自身的运行时数据，如哈希码（HashCode）、GC分代年龄、锁状态标志、线程持有的锁、偏向线程ID、偏向时间戳等等。在64位虚拟机位8字节，32位虚拟机位4字节。</p>
+</li>
+<li><p>用来指向对象对应的Class对象（其对应的元数据对象）的内存地址。在32位系统占4字节，在64位系统中占8字节。</p>
+</li>
+<li><p>如果对象是数组，则保持数组的长度。占4字节</p>
+</li>
 </ul>
+<p>对象实际数据包括了对象的所有成员变量，其大小由各个成员变量的大小决定，比如：byte和boolean是1个字节，short和char是2个字节，int和float是4个字节，long和double是8个字节，reference是4个字节（64位系统中是8个字节）。</p>
+<p>对齐填充：对象的大小（ShadowSize）必须是8的整数倍的字节，不足则用此填充。</p>
+<p><img src="http://oekcs3wuy.bkt.clouddn.com/Java%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80.png" alt="Java对象的内存布局"></p>
 <hr>
-<h1 id="intern-的使用分析（踩坑过程）"><a href="#intern-的使用分析（踩坑过程）" class="headerlink" title="intern()的使用分析（踩坑过程）"></a>intern()的使用分析（踩坑过程）</h1><pre><code>//case1
- String s = new String(&quot;1&quot;);
- s.intern();
- String s2 = &quot;1&quot;;
- System.out.println(s == s2);
-
- String s3 = new String(&quot;1&quot;) + new String(&quot;1&quot;);
- s3.intern();
- String s4 = &quot;11&quot;;
- System.out.println(s3 == s4);
-</code></pre><p>输出结果为：<br>JDK1.6：false false<br>JDK1.7：false true<br><img src="http://oekcs3wuy.bkt.clouddn.com/Java%E4%BC%98%E5%8C%96-String%E7%B1%BB%E7%9A%84intern%E6%96%B9%E6%B3%95_JDK1.6String%E5%AE%9E%E4%BE%8B%E5%8C%96%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D.png" alt="JDK1.6运行时内存图"></p>
-<p>  观察图中，可知，s2和s4是保存在PermGen中的，而s和s3保存在Heap中，所以结果返回就是false了<br>  <img src="http://oekcs3wuy.bkt.clouddn.com/Java%E4%BC%98%E5%8C%96-String%E7%B1%BB%E7%9A%84intern%E6%96%B9%E6%B3%95_JDK1.7String%E5%AE%9E%E4%BE%8B%E5%8C%96%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D.png" alt="此处输入图片的描述"></p>
-<p>  观察上图，在JDK1.7中，s实例化过程中，在堆空间保存了一个实例对象，在String Pool中保存一个字符串常量“1”，所以在s执行intern()方法时返回的是String Pool中的“1”,当执行String s2 = “1”时，由于字符串池中存在与之等值的字符串，所以引用指向池中的”1”，而s在堆空间还是指向对象实例，s2在则指向String Pool中的字符串常量，所以返回false。</p>
-<pre><code>//case2
-String s0 = new StringBuilder().append(&quot;你好&quot;).append(&quot;!&quot;).toString();//(1)
-System.out.println(s0.intern() == s0);
-
-String s1 = new StringBuilder().append(&quot;ja&quot;).append(&quot;va&quot;).toString();//(2)
-System.out.println(s1.intern() == s1);
-</code></pre><p>  此case就分析JDK1.7,因为JDK1.6中与上一例子一样都是返回false，原理一致。<br>  此case在JDK1.7输出结果：<br>  true<br>false</p>
-<p>  <img src="http://oekcs3wuy.bkt.clouddn.com/Java%E4%BC%98%E5%8C%96-String%E7%B1%BB%E7%9A%84intern%E6%96%B9%E6%B3%95_JDK1.7%E5%AD%98%E5%9C%A8%E7%B3%BB%E7%BB%9F%E5%8A%A0%E8%BD%BD%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%B8%B8%E9%87%8F%E7%9A%84String%E5%AE%9E%E4%BE%8B%E5%8C%96%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D.png" alt="Java优化-String类的intern方法_JDK1.7存在系统加载字符串常量的String实例化内存分配"></p>
-<p>  观察上图，在（1）执行过程中，在String Pool中生成了两个字符串常量(“你好”，”！”)，和一个在堆中的实例化对象。当执行s0.intern()时，把“你好！”加入String Pool，因为此时在String Pool中没有“你好！”这个字符串常量，所以该操作是复制了s0的引用传给了String Pool，所以s0==s0.intern()返回true。<br>  在（2）执行中，与(1)一样，实例化了一个对象和把两个字符串常量放进String Pool中。而执行s1.intern()时，由于JVM加载的过程中就把”java”放进了String Pool中，所以s1.intern() ==”java”, s1.intern != s1。 s1还是原来的的实例地址，s1.intern()的地址则是JVM加载时候生成的那个。</p>
+<h1 id="简单对象大小计算"><a href="#简单对象大小计算" class="headerlink" title="简单对象大小计算"></a>简单对象大小计算</h1><p>通过<a href="http://www.javamex.com/classmexer/classmexer-0_03.zip" title="classmexer.jar" target="_blank" rel="external">classmexer.jar</a>辅助得到对象大小。<br>运行设置JVM参数：</p>
+<p>-javaagent:<strong>你自己的路径</strong>/classmexer.jar<br>-XX:+UseCompressedOops</p>
+<pre><code>public class Test{
+    int a = 0;
+    public static void main(String[] args) {
+        System.out.println(&quot;Shallow Size: &quot; + MemoryUtil.memoryUsageOf(new Test()) + &quot; bytes&quot;);
+        System.out.println(&quot;Retained Size: &quot; + MemoryUtil.deepMemoryUsageOf(new Test()) + &quot; bytes&quot;);
+    }
+}
+</code></pre><p>在64位虚拟机中，Shallow Size=8+4+4+2=16，8为MarkWord的大小，第一个4为ClassPoiner的大小（64位虚拟机默认开启指针压缩，而32位虚拟机不支持压缩），第二个4为一个int数据类型的大小，因为不足16（8的整数倍）所以再加2.</p>
 
       
     </div>
@@ -340,17 +335,13 @@ System.out.println(s1.intern() == s1);
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/08/13/MySQL优化小结/" rel="next" title="MySQL优化小结">
-                <i class="fa fa-chevron-left"></i> MySQL优化小结
+              <a href="/2017/08/21/Java优化-String类的intern方法/" rel="next" title="Java优化-String类的intern方法">
+                <i class="fa fa-chevron-left"></i> Java优化-String类的intern方法
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/08/26/Java对象内存布局/" rel="prev" title="Java对象内存布局">
-                Java对象内存布局 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -399,8 +390,8 @@ System.out.println(s1.intern() == s1);
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2017/08/21/Java优化-String类的intern方法/"
-           data-title="Java优化-String类的intern方法" data-url="kaitofung.cn/2017/08/21/Java优化-String类的intern方法/">
+      <div class="ds-thread" data-thread-key="2017/08/26/Java对象内存布局/"
+           data-title="Java对象内存布局" data-url="kaitofung.cn/2017/08/26/Java对象内存布局/">
       </div>
     
   </div>
@@ -491,7 +482,7 @@ System.out.println(s1.intern() == s1);
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#intern-的作用与原理"><span class="nav-number">1.</span> <span class="nav-text">intern()的作用与原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#intern-的使用分析（踩坑过程）"><span class="nav-number">2.</span> <span class="nav-text">intern()的使用分析（踩坑过程）</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#简单对象大小计算"><span class="nav-number">1.</span> <span class="nav-text">简单对象大小计算</span></a></li></ol></div>
             
           </div>
         </section>

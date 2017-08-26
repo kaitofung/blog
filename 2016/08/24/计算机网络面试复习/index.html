@@ -1,0 +1,673 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="面试," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Kaito's blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="1.什么是TCP协议 ，什么是UDP协议，它们有什么区别TCP和UDP是OSI模型中的运输层中的协议。TCP提供可靠的通信传输，而UDP则常被用于让广播和细节控制交给应用的通信传输。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计算机网络面试复习">
+<meta property="og:url" content="kaitofung.cn/2016/08/24/计算机网络面试复习/index.html">
+<meta property="og:site_name" content="Kaito's blog">
+<meta property="og:description" content="1.什么是TCP协议 ，什么是UDP协议，它们有什么区别TCP和UDP是OSI模型中的运输层中的协议。TCP提供可靠的通信传输，而UDP则常被用于让广播和细节控制交给应用的通信传输。">
+<meta property="og:image" content="https://pic3.zhimg.com/v2-2f38fb35dff4a5cc9f5352b9c7533222_b.png">
+<meta property="og:image" content="https://pic2.zhimg.com/v2-99bc5fa53acca200f564b0bd69d1bb41_b.png">
+<meta property="og:image" content="https://pic1.zhimg.com/v2-6c73a236adcb7704e5e75162465c3aec_b.png">
+<meta property="og:updated_time" content="2017-08-26T16:40:17.743Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="计算机网络面试复习">
+<meta name="twitter:description" content="1.什么是TCP协议 ，什么是UDP协议，它们有什么区别TCP和UDP是OSI模型中的运输层中的协议。TCP提供可靠的通信传输，而UDP则常被用于让广播和细节控制交给应用的通信传输。">
+<meta name="twitter:image" content="https://pic3.zhimg.com/v2-2f38fb35dff4a5cc9f5352b9c7533222_b.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="kaitofung.cn/2016/08/24/计算机网络面试复习/"/>
+
+  <title> 计算机网络面试复习 | Kaito's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Kaito's blog</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                计算机网络面试复习
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-08-24T21:26:45+08:00" content="2016-08-24">
+              2016-08-24
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/08/24/计算机网络面试复习/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/24/计算机网络面试复习/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="1-什么是TCP协议-，什么是UDP协议，它们有什么区别"><a href="#1-什么是TCP协议-，什么是UDP协议，它们有什么区别" class="headerlink" title="1.什么是TCP协议 ，什么是UDP协议，它们有什么区别"></a>1.什么是TCP协议 ，什么是UDP协议，它们有什么区别</h1><p>TCP和UDP是OSI模型中的运输层中的协议。TCP提供可靠的通信传输，而UDP则常被用于让广播和细节控制交给应用的通信传输。<a id="more"></a></p>
+<p>两者的区别大致如下：</p>
+<p>TCP面向连接，UDP面向非连接即发送数据前不需要建立链接<br>TCP提供可靠的服务（数据传输），UDP无法保证<br>TCP面向字节流，UDP面向报文<br>TCP数据传输慢，UDP数据传输快<br>如果还不是太了解这两者的区别，点击阅读：<a href="http://blog.csdn.net/yipiankongbai/article/details/24435977" target="_blank" rel="external">TCP与UDP的区别 - yipiankongbai的专栏</a></p>
+<p>UDP 是一个简单的传输层协议。和 TCP 相比，UDP 有下面几个显著特性：</p>
+<ul>
+<li>UDP 缺乏可靠性。UDP 本身不提供确认，序列号，超时重传等机制。UDP 数据报可能在网络中被复制，被重新排序。即 UDP 不保证数据报会到达其最终目的地，也不保证各个数据报的先后顺序，也不保证每个数据报只到达一次</li>
+<li>UDP 数据报是有长度的。每个 UDP 数据报都有长度，如果一个数据报正确地到达目的地，那么该数据报的长度将随数据一起传递给接收方。而 TCP 是一个字节流协议，没有任何（协议上的）记录边界。</li>
+<li>UDP 是无连接的。UDP 客户和服务器之前不必存在长期的关系。UDP 发送数据报之前也不需要经过握手创建连接的过程。</li>
+<li>UDP 支持多播和广播。<h1 id="2-说说TCP三次握手，四次挥手过程，为什么是三次？四次？"><a href="#2-说说TCP三次握手，四次挥手过程，为什么是三次？四次？" class="headerlink" title="2. 说说TCP三次握手，四次挥手过程，为什么是三次？四次？"></a>2. 说说TCP三次握手，四次挥手过程，为什么是三次？四次？</h1>三次握手：</li>
+</ul>
+<p>第一次握手：客户端发送syn包(syn=x)到服务器，并进入SYN_SEND状态，等待服务器确认；</p>
+<p>第二次握手：服务器收到syn包，必须确认客户的SYN（ack=x+1），同时自己也发送一个SYN包（syn=y），即SYN+ACK包，此时服务器进入SYN_RECV状态；</p>
+<p>第三次握手：客户端收到服务器的SYN＋ACK包，向服务器发送确认包ACK(ack=y+1)，此包发送完毕，客户端和服务器进入ESTABLISHED状态，完成三次握手。</p>
+<p>握手过程中传送的包里不包含数据，三次握手完毕后，客户端与服务器才正式开始传送数据。理想状态下，TCP连接一旦建立，在通信双方中的任何一方主动关闭连接之前，TCP 连接都将被一直保持下去。</p>
+<p>四次握手</p>
+<p>与建立连接的“三次握手”类似，断开一个TCP连接则需要“四次握手”。</p>
+<p>采用三次握手是为了防止失效的连接请求报文段突然又传送到主机B，因而产生错误。失效的连接请求报文段是指：主机A发出的连接请求没有收到主机B的确认，于是经过一段时间后，主机A又重新向主机B发送连接请求，且建立成功，顺序完成数据传输。考虑这样一种特殊情况，主机A第一次发送的连接请求并没有丢失，而是因为网络节点导致延迟达到主机B，主机B以为是主机A又发起的新连接，于是主机B同意连接，并向主机A发回确认，但是此时主机A根本不会理会，主机B就一直在等待主机A发送数据，导致主机B的资源浪费。</p>
+<p>第一次挥手：主动关闭方发送一个FIN，用来关闭主动方到被动关闭方的数据传送，也就是主动关闭方告诉被动关闭方：我已经不 会再给你发数据了(当然，在fin包之前发送出去的数据，如果没有收到对应的ack确认报文，主动关闭方依然会重发这些数据)，但是，此时主动关闭方还可 以接受数据。</p>
+<p>第二次挥手：被动关闭方收到FIN包后，发送一个ACK给对方，确认序号为收到序号+1（与SYN相同，一个FIN占用一个序号）。</p>
+<p>第三次挥手：被动关闭方发送一个FIN，用来关闭被动关闭方到主动关闭方的数据传送，也就是告诉主动关闭方，我的数据也发送完了，不会再给你发数据了。</p>
+<p>第四次挥手：主动关闭方收到FIN后，发送一个ACK给被动关闭方，确认序号为收到序号+1，至此，完成四次挥手。</p>
+<p><img src="https://pic3.zhimg.com/v2-2f38fb35dff4a5cc9f5352b9c7533222_b.png" alt=""></p>
+<h1 id="3-在浏览器中输入网址之后执行会发生什么？"><a href="#3-在浏览器中输入网址之后执行会发生什么？" class="headerlink" title="3.在浏览器中输入网址之后执行会发生什么？"></a>3.在浏览器中输入网址之后执行会发生什么？</h1><ul>
+<li>查找域名对应的IP地址。这一步会依次查找浏览器缓存，系统缓存，路由器缓存，ISPNDS缓存，根域名服务器</li>
+<li>浏览器向IP对应的web服务器发送一个HTTP请求</li>
+<li>服务器响应请求，发回网页内容</li>
+<li>浏览器解析网页内容</li>
+</ul>
+<p><img src="https://pic2.zhimg.com/v2-99bc5fa53acca200f564b0bd69d1bb41_b.png" alt="详细解释"></p>
+<h1 id="4-简单解释一些ARP协议的工作过程"><a href="#4-简单解释一些ARP协议的工作过程" class="headerlink" title="4.简单解释一些ARP协议的工作过程"></a>4.简单解释一些ARP协议的工作过程</h1><p><img src="https://pic1.zhimg.com/v2-6c73a236adcb7704e5e75162465c3aec_b.png" alt=""></p>
+<h1 id="5-HTTP-协议包括哪些请求？"><a href="#5-HTTP-协议包括哪些请求？" class="headerlink" title="5.HTTP 协议包括哪些请求？"></a>5.HTTP 协议包括哪些请求？</h1><ul>
+<li>GET：对服务器资源的简单请求</li>
+<li>POST：用于发送包含用户提交数据的请求</li>
+<li><p>————以及————</p>
+</li>
+<li><p>HEAD：类似于GET请求，不过返回的响应中没有具体内容，用于获取报头</p>
+</li>
+<li>PUT：传说中请求文档的一个版本</li>
+<li>DELETE：发出一个删除指定文档的请求</li>
+<li>TRACE：发送一个请求副本，以跟踪其处理进程</li>
+<li>OPTIONS：返回所有可用的方法，检查服务器支持哪些方法</li>
+<li>CONNECT：用于ssl隧道的基于代理的请求<h1 id="6-Post与Get的区别"><a href="#6-Post与Get的区别" class="headerlink" title="6.Post与Get的区别"></a>6.Post与Get的区别</h1></li>
+<li>根据HTTP规范，GET用于信息获取，而且应该是安全和幂等的</li>
+<li>根据HTTP规范，POST请求表示可能修改服务器上资源的请求</li>
+<li>GET请求的数据会附在URL后面，POST的数据放在HTTP包体</li>
+<li>POST安全性比GET安全性高</li>
+</ul>
+<h1 id="7-DNS域名系统，简单描述其工作原理。"><a href="#7-DNS域名系统，简单描述其工作原理。" class="headerlink" title="7.DNS域名系统，简单描述其工作原理。"></a>7.DNS域名系统，简单描述其工作原理。</h1><p>当DNS客户机需要在程序中使用名称时，它会查询DNS服务器来解析该名称。客户机发送的每条查询信息包括三条信息：包括：指定的DNS域名，指定的查询类型，DNS域名的指定类别。基于UDP服务，端口53. 该应用一般不直接为用户使用，而是为其他应用服务，如HTTP，SMTP等在其中需要完成主机名到IP地址的转换。</p>
+<h1 id="8-面向连接和非面向连接的服务的特点是什么？"><a href="#8-面向连接和非面向连接的服务的特点是什么？" class="headerlink" title="8.面向连接和非面向连接的服务的特点是什么？"></a>8.面向连接和非面向连接的服务的特点是什么？</h1><p>面向连接的服务，通信双方在进行通信之前，要先在双方建立起一个完整的可以彼此沟通的通道，在通信过程中，整个连接的情况一直可以被实时地监控和管理。</p>
+<p>非面向连接的服务，不需要预先建立一个联络两个通信节点的连接，需要通信的时候，发送节点就可以往网络上发送信息，让信息自主地在网络上去传，一般在传输的过程中不再加以监控。</p>
+<h1 id="9-TCP的可靠性如何保证？"><a href="#9-TCP的可靠性如何保证？" class="headerlink" title="9.TCP的可靠性如何保证？"></a>9.TCP的可靠性如何保证？</h1><p>TCP的可靠性是通过顺序编号和确认（ACK）来实现的。</p>
+<h1 id="10-HTTP和HTTPS的区别"><a href="#10-HTTP和HTTPS的区别" class="headerlink" title="10.HTTP和HTTPS的区别"></a>10.HTTP和HTTPS的区别</h1><p>HTTPS = HTTP + SSL<br>SSL协议提供的服务主要有：</p>
+<ul>
+<li>认证用户和服务器，确保数据发送到正确的客户机和服务器；</li>
+<li>加密数据以防止数据中途被窃取；</li>
+<li>维护数据的完整性，确保数据在传输过程中不被改变。</li>
+</ul>
+<h1 id="11-Tcp建立长连时，本身自己会有心跳机制，为什么一般业务还会在业务层再增加一个心跳机制？"><a href="#11-Tcp建立长连时，本身自己会有心跳机制，为什么一般业务还会在业务层再增加一个心跳机制？" class="headerlink" title="11.Tcp建立长连时，本身自己会有心跳机制，为什么一般业务还会在业务层再增加一个心跳机制？"></a>11.Tcp建立长连时，本身自己会有心跳机制，为什么一般业务还会在业务层再增加一个心跳机制？</h1><h1 id="12-TCP丢包处理"><a href="#12-TCP丢包处理" class="headerlink" title="12.TCP丢包处理"></a>12.TCP丢包处理</h1><h1 id="13-说说TCP的拥塞机制"><a href="#13-说说TCP的拥塞机制" class="headerlink" title="13.说说TCP的拥塞机制"></a>13.说说TCP的拥塞机制</h1><h1 id="14-说说TCP的超时处理"><a href="#14-说说TCP的超时处理" class="headerlink" title="14.说说TCP的超时处理"></a>14.说说TCP的超时处理</h1>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/面试/" rel="tag">#面试</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/08/13/Handler的工作流程/" rel="next" title="Handler的工作流程">
+                <i class="fa fa-chevron-left"></i> Handler的工作流程
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/01/06/HashMap工作原理/" rel="prev" title="HashMap工作原理">
+                HashMap工作原理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/08/24/计算机网络面试复习/"
+           data-title="计算机网络面试复习" data-url="kaitofung.cn/2016/08/24/计算机网络面试复习/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://avatars3.githubusercontent.com/u/17872493?v=3&s=466"
+               alt="Kaito Fung" />
+          <p class="site-author-name" itemprop="name">Kaito Fung</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">10</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-什么是TCP协议-，什么是UDP协议，它们有什么区别"><span class="nav-number">1.</span> <span class="nav-text">1.什么是TCP协议 ，什么是UDP协议，它们有什么区别</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-说说TCP三次握手，四次挥手过程，为什么是三次？四次？"><span class="nav-number">2.</span> <span class="nav-text">2. 说说TCP三次握手，四次挥手过程，为什么是三次？四次？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-在浏览器中输入网址之后执行会发生什么？"><span class="nav-number">3.</span> <span class="nav-text">3.在浏览器中输入网址之后执行会发生什么？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-简单解释一些ARP协议的工作过程"><span class="nav-number">4.</span> <span class="nav-text">4.简单解释一些ARP协议的工作过程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-HTTP-协议包括哪些请求？"><span class="nav-number">5.</span> <span class="nav-text">5.HTTP 协议包括哪些请求？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-Post与Get的区别"><span class="nav-number">6.</span> <span class="nav-text">6.Post与Get的区别</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7-DNS域名系统，简单描述其工作原理。"><span class="nav-number">7.</span> <span class="nav-text">7.DNS域名系统，简单描述其工作原理。</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#8-面向连接和非面向连接的服务的特点是什么？"><span class="nav-number">8.</span> <span class="nav-text">8.面向连接和非面向连接的服务的特点是什么？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#9-TCP的可靠性如何保证？"><span class="nav-number">9.</span> <span class="nav-text">9.TCP的可靠性如何保证？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#10-HTTP和HTTPS的区别"><span class="nav-number">10.</span> <span class="nav-text">10.HTTP和HTTPS的区别</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#11-Tcp建立长连时，本身自己会有心跳机制，为什么一般业务还会在业务层再增加一个心跳机制？"><span class="nav-number">11.</span> <span class="nav-text">11.Tcp建立长连时，本身自己会有心跳机制，为什么一般业务还会在业务层再增加一个心跳机制？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#12-TCP丢包处理"><span class="nav-number">12.</span> <span class="nav-text">12.TCP丢包处理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#13-说说TCP的拥塞机制"><span class="nav-number">13.</span> <span class="nav-text">13.说说TCP的拥塞机制</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#14-说说TCP的超时处理"><span class="nav-number">14.</span> <span class="nav-text">14.说说TCP的超时处理</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Kaito Fung</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"kaito"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
