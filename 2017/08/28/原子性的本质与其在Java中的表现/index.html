@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="Java," />
 
 
 
@@ -86,12 +86,33 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="Kaito's blog">
-<meta property="og:url" content="kaitofung.cn/index.html">
+<meta name="description" content="什么是原子性？不可被(线程调度)中断的一个或一系列操作，这种操作一旦开始，就一直运行到结束，中间不会有任何 context switch 
+在Java的线程中对一个变量的读写，并不是直接操作内存的值的，而是从（主）内存读到线程自己的工作内存，然后这个副本值进行一系列运算（操作），最后写回到主内存中。
+
+在上述过程中涉及到的操作有：
+
+lock(锁定)：作用与主内存的变量，它把把一个变量标识为一个内">
+<meta property="og:type" content="article">
+<meta property="og:title" content="原子性的本质与其在Java中的表现">
+<meta property="og:url" content="kaitofung.cn/2017/08/28/原子性的本质与其在Java中的表现/index.html">
 <meta property="og:site_name" content="Kaito's blog">
+<meta property="og:description" content="什么是原子性？不可被(线程调度)中断的一个或一系列操作，这种操作一旦开始，就一直运行到结束，中间不会有任何 context switch 
+在Java的线程中对一个变量的读写，并不是直接操作内存的值的，而是从（主）内存读到线程自己的工作内存，然后这个副本值进行一系列运算（操作），最后写回到主内存中。
+
+在上述过程中涉及到的操作有：
+
+lock(锁定)：作用与主内存的变量，它把把一个变量标识为一个内">
+<meta property="og:image" content="http://oekcs3wuy.bkt.clouddn.com/Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B.png">
+<meta property="og:updated_time" content="2017-08-28T16:46:25.809Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Kaito's blog">
+<meta name="twitter:title" content="原子性的本质与其在Java中的表现">
+<meta name="twitter:description" content="什么是原子性？不可被(线程调度)中断的一个或一系列操作，这种操作一旦开始，就一直运行到结束，中间不会有任何 context switch 
+在Java的线程中对一个变量的读写，并不是直接操作内存的值的，而是从（主）内存读到线程自己的工作内存，然后这个副本值进行一系列运算（操作），最后写回到主内存中。
+
+在上述过程中涉及到的操作有：
+
+lock(锁定)：作用与主内存的变量，它把把一个变量标识为一个内">
+<meta name="twitter:image" content="http://oekcs3wuy.bkt.clouddn.com/Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B.png">
 
 
 
@@ -112,9 +133,9 @@
 
 
 
-  <link rel="canonical" href="kaitofung.cn/"/>
+  <link rel="canonical" href="kaitofung.cn/2017/08/28/原子性的本质与其在Java中的表现/"/>
 
-  <title> Kaito's blog </title>
+  <title> 原子性的本质与其在Java中的表现 | Kaito's blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -135,9 +156,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left 
-   page-home 
- ">
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -204,9 +223,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
   
@@ -226,10 +245,7 @@
             
             
               
-                
-                <a class="post-title-link" href="/2017/08/28/原子性的本质与其在Java中的表现/" itemprop="url">
-                  原子性的本质与其在Java中的表现
-                </a>
+                原子性的本质与其在Java中的表现
               
             
           </h1>
@@ -276,9 +292,7 @@
       
 
       
-        
-          
-            <h1 id="什么是原子性？"><a href="#什么是原子性？" class="headerlink" title="什么是原子性？"></a>什么是原子性？</h1><p>不可被(<a href="https://baike.baidu.com/item/%E7%BA%BF%E7%A8%8B%E8%B0%83%E5%BA%A6" title="线程调度" target="_blank" rel="external">线程调度</a>)中断的一个或一系列操作，这种操作一旦开始，就一直运行到结束，中间不会有任何 context switch </p>
+        <h1 id="什么是原子性？"><a href="#什么是原子性？" class="headerlink" title="什么是原子性？"></a>什么是原子性？</h1><p>不可被(<a href="https://baike.baidu.com/item/%E7%BA%BF%E7%A8%8B%E8%B0%83%E5%BA%A6" title="线程调度" target="_blank" rel="external">线程调度</a>)中断的一个或一系列操作，这种操作一旦开始，就一直运行到结束，中间不会有任何 context switch </p>
 <p>在Java的线程中对一个变量的读写，并不是直接操作内存的值的，而是从（主）内存读到线程自己的工作内存，然后这个副本值进行一系列运算（操作），最后写回到主内存中。</p>
 <p><img src="http://oekcs3wuy.bkt.clouddn.com/Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B.png" alt="Java内存模型"></p>
 <p>在上述过程中涉及到的操作有：</p>
@@ -313,454 +327,82 @@
 <p>使用锁机制实现原子操作</p>
 <p>锁机制保证了<strong>只有获得锁的线程能够操作锁定的内存区域</strong>。JVM内部实现了很多种锁机制，有偏向锁，轻量级锁和互斥锁，有意思的是<strong>除了偏向锁，JVM实现锁的方式都用到的循环CAS，当一个线程想进入同步块的时候使用循环CAS的方式来获取锁，当它退出同步块的时候使用循环CAS释放锁。</strong></p>
 
-          
+      
+    </div>
+
+    <div>
+      
         
+
       
     </div>
 
     <div>
       
-    </div>
+        
 
-    <div>
       
     </div>
 
     <footer class="post-footer">
       
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/08/26/Java对象内存布局/" itemprop="url">
-                  Java对象内存布局
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-08-26T20:25:14+08:00" content="2017-08-26">
-              2017-08-26
-            </time>
-          </span>
-
+        <div class="post-tags">
           
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2017/08/26/Java对象内存布局/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/08/26/Java对象内存布局/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
+            <a href="/tags/Java/" rel="tag">#Java</a>
           
         </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
-        
-          <p>一个Java对象的内存布局包括：对象头，对象的实例数据，还有对齐填充位。</p>
-<p>对象头：对象头里面有MarkWord,ClassPointer,ArrayLength。
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2017/08/26/Java对象内存布局/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/08/26/Java对象内存布局/" rel="next" title="Java对象内存布局">
+                <i class="fa fa-chevron-left"></i> Java对象内存布局
+              </a>
+            
           </div>
-        
-      
-    </div>
 
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
+          <div class="post-nav-prev post-nav-item">
             
-            
-              
-                
-                <a class="post-title-link" href="/2017/08/21/Java优化-String类的intern方法/" itemprop="url">
-                  Java优化-String类的intern方法
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-08-21T21:20:25+08:00" content="2017-08-21">
-              2017-08-21
-            </time>
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2017/08/21/Java优化-String类的intern方法/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/08/21/Java优化-String类的intern方法/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
-          
+          </div>
         </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
-        
-          <h1 id="intern-的作用与原理"><a href="#intern-的作用与原理" class="headerlink" title="intern()的作用与原理"></a>intern()的作用与原理</h1><p>intern()方法在JDK1.6前后是有差异的，在JDK1.6前，常量池是在PermGen区的，而JDK1.7是在Heap区的，而该方法在两个版本的表现是：
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2017/08/21/Java优化-String类的intern方法/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </article>
 
 
-    
+
+    <div class="post-spread">
       
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
 
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/08/13/MySQL优化小结/" itemprop="url">
-                  MySQL优化小结
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-08-13T20:45:37+08:00" content="2017-08-13">
-              2017-08-13
-            </time>
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2017/08/13/MySQL优化小结/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/08/13/MySQL优化小结/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>数据的传输过程速度是影响一个产品的一个重要指标，所以对MySQL/Oracle的优化是有很大的必要性的。<br> 减少 IO 次数
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2017/08/13/MySQL优化小结/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
       
     </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/06/17/Java基础：类加载/" itemprop="url">
-                  Java基础：类加载
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-06-17T21:45:24+08:00" content="2017-06-17">
-              2017-06-17
-            </time>
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2017/06/17/Java基础：类加载/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/06/17/Java基础：类加载/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <ul>
-<li><p>Java类何时被初始化<br>什么情况下需要开始类加载过程的第一个阶段:”加载”。虚拟机规范中并没强行约束，这点可以交给虚拟机的的具体实现自由把握，但是对于初始化阶段虚拟机规范是严格规定了如下几种情况，如果类未初始化会对类进行初始化。</p>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2017/06/17/Java基础：类加载/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-  </section>
-
-  
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
-  </nav>
-
+  </div>
 
 
           </div>
@@ -768,6 +410,14 @@
 
 
           
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/08/28/原子性的本质与其在Java中的表现/"
+           data-title="原子性的本质与其在Java中的表现" data-url="kaitofung.cn/2017/08/28/原子性的本质与其在Java中的表现/">
+      </div>
+    
+  </div>
+
 
         </div>
         
@@ -787,8 +437,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+      <section class="site-overview sidebar-panel ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="https://avatars3.githubusercontent.com/u/17872493?v=3&s=466"
@@ -838,6 +497,17 @@
 
       </section>
 
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是原子性？"><span class="nav-number">1.</span> <span class="nav-text">什么是原子性？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#处理器如何实现原子操作"><span class="nav-number">2.</span> <span class="nav-text">处理器如何实现原子操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用总线锁保证原子性"><span class="nav-number">2.1.</span> <span class="nav-text">使用总线锁保证原子性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用缓存锁保证原子性"><span class="nav-number">2.2.</span> <span class="nav-text">使用缓存锁保证原子性</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#原子性在Java中的实现"><span class="nav-number">3.</span> <span class="nav-text">原子性在Java中的实现</span></a></li></ol></div>
+            
+          </div>
+        </section>
       
 
     </div>
@@ -934,6 +604,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
 
   
 
