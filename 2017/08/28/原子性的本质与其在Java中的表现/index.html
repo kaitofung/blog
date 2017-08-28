@@ -95,7 +95,7 @@
 <meta property="og:site_name" content="Kaito's blog">
 <meta property="og:description" content="什么是原子性？不可被(线程调度)中断的一个或一系列操作，这种操作一旦开始，就一直运行到结束，中间不会有任何 context switch">
 <meta property="og:image" content="http://oekcs3wuy.bkt.clouddn.com/Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B.png">
-<meta property="og:updated_time" content="2017-08-28T16:53:49.170Z">
+<meta property="og:updated_time" content="2017-08-28T16:59:27.635Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="原子性的本质与其在Java中的表现">
 <meta name="twitter:description" content="什么是原子性？不可被(线程调度)中断的一个或一系列操作，这种操作一旦开始，就一直运行到结束，中间不会有任何 context switch">
@@ -279,7 +279,7 @@
       
 
       
-        <h1 id="什么是原子性？"><a href="#什么是原子性？" class="headerlink" title="什么是原子性？"></a>什么是原子性？</h1><p>不可被(<a href="https://baike.baidu.com/item/%E7%BA%BF%E7%A8%8B%E8%B0%83%E5%BA%A6" title="线程调度" target="_blank" rel="external">线程调度</a>)中断的一个或一系列操作，这种操作一旦开始，就一直运行到结束，中间不会有任何 context switch <a id="more"></a></p>
+        <h1 id="什么是原子性？"><a href="#什么是原子性？" class="headerlink" title="什么是原子性？"></a>什么是原子性？</h1><p>不可被(<a href="https://baike.baidu.com/item/%E7%BA%BF%E7%A8%8B%E8%B0%83%E5%BA%A6" title="线程调度" target="_blank" rel="external">线程调度</a>)中断的一个或一系列操作，这种操作一旦开始，就一直运行到结束，中间不会有任何 context switch        <a id="more"></a></p>
 <p>在Java的线程中对一个变量的读写，并不是直接操作内存的值的，而是从（主）内存读到线程自己的工作内存，然后这个副本值进行一系列运算（操作），最后写回到主内存中。</p>
 <p><img src="http://oekcs3wuy.bkt.clouddn.com/Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B.png" alt="Java内存模型"></p>
 <p>在上述过程中涉及到的操作有：</p>
