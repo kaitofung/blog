@@ -227,6 +227,110 @@
             
               
                 
+                <a class="post-title-link" href="/2017/06/17/Java基础：类加载/" itemprop="url">
+                  Java基础：类加载
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-06-17T21:45:24+08:00" content="2017-06-17">
+              2017-06-17
+            </time>
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/06/17/Java基础：类加载/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/06/17/Java基础：类加载/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <ul>
+<li><p>Java类何时被初始化<br>什么情况下需要开始类加载过程的第一个阶段:”加载”。虚拟机规范中并没强行约束，这点可以交给虚拟机的的具体实现自由把握，但是对于初始化阶段虚拟机规范是严格规定了如下几种情况，如果类未初始化会对类进行初始化。</p>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2017/06/17/Java基础：类加载/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2017/06/16/Java运行时内存分配/" itemprop="url">
                   Java运行时内存分配
                 </a>
@@ -621,110 +725,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/06/19/View的呈现过程——之浅谈ViewRootImpl/" itemprop="url">
-                  View的呈现过程——之浅谈ViewRootImpl
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-06-19T21:15:44+08:00" content="2016-06-19">
-              2016-06-19
-            </time>
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2016/06/19/View的呈现过程——之浅谈ViewRootImpl/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/06/19/View的呈现过程——之浅谈ViewRootImpl/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p><a href="http://blog.kaitofung.cn/2016/05/05/%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90-View%E7%9A%84%E5%91%88%E7%8E%B0%E8%BF%87%E7%A8%8B%E2%80%94%E2%80%94%E4%B9%8BsetContentView/" title="View的呈现过程——之setContentView ">上一遍文章</a>结束的时候谈到View要经过测量，布局，绘制才能呈现。那么什么时候才会执行这几个步骤呢？相信接触过自定义View的同学都会知道是invalidate()可以引起重绘的。<br>下面通过Read The Fucking Source Code，整理出以下流程：<br><img src="http://oekcs3wuy.bkt.clouddn.com/View%E7%9A%84invalidate%E6%B5%81%E7%A8%8B%E5%9B%BE.png" alt="View的invalidate流程"></p>
-<p>通过三种颜色区分，分别在View.ViewGroup,ViewRootImpl调用相应的方法，可见
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2016/06/19/View的呈现过程——之浅谈ViewRootImpl/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -770,7 +770,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">11</span>
+              <span class="site-state-item-count">12</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
